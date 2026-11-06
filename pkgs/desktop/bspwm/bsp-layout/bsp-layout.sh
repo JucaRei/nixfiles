@@ -357,80 +357,79 @@ watch_layouts() {
   }
   trap cleanup INT TERM EXIT HUP
 
-  # Reaplicar layouts salvos para todos os desktops na inicialização do daemon
-  reload_layouts
+  # Loop de resiliência: aguardar até que o BSPWM esteja respondendo ao IPC
+  while true; do
+    while ! bspc query -M >/dev/null 2>&1; do
+      sleep 0.5
+    done
 
-  # Escutar eventos via IPC do bspwm:
-  # - node_manage: nova janela aberta
-  # - node_unmanage: janela fechada
-  # - node_transfer: janela movida entre desktops
-  # - node_state: janela alternada (floating, fullscreen)
-  bspc subscribe node_manage node_unmanage node_transfer node_state 2>/dev/null | while read -r event arg1 arg2 arg3 rest; do
-    # Se o lock estiver ativo (já estamos recalculando um layout), ignorar
-    [ -f "$lock_file" ] && continue
+    # Reaplicar layouts salvos para todos os desktops após o BSPWM estar ativo
+    reload_layouts
 
-    local target_desktop=""
+    # Escutar eventos via IPC do bspwm (categoria 'node'):
+    # - node_manage: nova janela aberta
+    # - node_unmanage: janela fechada
+    # - node_transfer: janela movida entre desktops
+    # - node_state: janela alternada (floating, fullscreen)
+    bspc subscribe node | while read -r event arg1 arg2 arg3 rest; do
+      [ -f "$lock_file" ] && continue
 
-    case "$event" in
-      node_manage|node_unmanage)
-        # arg1: monitor_id, arg2: desktop_id, arg3: node_id
-        target_desktop="$arg2"
-        ;;
-      node_transfer)
-        # Formato: node_transfer <src_m> <src_d> <src_n> <dst_m> <dst_d> <dst_n>
-        # arg1=src_m, arg2=src_d, arg3=src_n, rest=<dst_m> <dst_d> <dst_n>
-        local src_d="$arg2"
-        local dst_d
-        dst_d=$(echo "$rest" | awk '{print $2}')
+      local target_desktop=""
 
-        # Se for transferência dentro do mesmo desktop (reordenação interna gerada pelo bsp-layout), ignorar
-        [ "$src_d" = "$dst_d" ] && continue
-
-        # Transferência entre desktops: recalcular origem se tiver layout ativo
-        local src_name
-        src_name=$(bspc query -D -d "$src_d" --names 2>/dev/null || echo "$src_d")
-        local src_layout
-        src_layout=$(get_layout "$src_name")
-        if [ -n "$src_layout" ] && [ "$src_layout" != "tiled" ] && [ "$src_layout" != "-" ]; then
-          touch "$lock_file"
-          apply_layout "$src_layout" "$src_name"
-          rm -f "$lock_file" 2>/dev/null || true
-        fi
-
-        target_desktop="$dst_d"
-        ;;
-      node_state)
-        # Formato: node_state <m_id> <d_id> <n_id> <state> <on|off>
-        # arg1=m_id, arg2=d_id, arg3=n_id, rest=<state> <on|off>
-        local st
-        st=$(echo "$rest" | awk '{print $1}')
-        if [ "$st" = "floating" ] || [ "$st" = "fullscreen" ]; then
+      case "$event" in
+        node_manage|node_unmanage)
           target_desktop="$arg2"
-        else
+          ;;
+        node_transfer)
+          local src_d="$arg2"
+          local dst_d
+          dst_d=$(echo "$rest" | awk '{print $2}')
+
+          [ "$src_d" = "$dst_d" ] && continue
+
+          local src_name
+          src_name=$(bspc query -D -d "$src_d" --names 2>/dev/null || echo "$src_d")
+          local src_layout
+          src_layout=$(get_layout "$src_name")
+          if [ -n "$src_layout" ] && [ "$src_layout" != "tiled" ] && [ "$src_layout" != "-" ]; then
+            touch "$lock_file"
+            apply_layout "$src_layout" "$src_name"
+            rm -f "$lock_file" 2>/dev/null || true
+          fi
+
+          target_desktop="$dst_d"
+          ;;
+        node_state)
+          local st
+          st=$(echo "$rest" | awk '{print $1}')
+          if [ "$st" = "floating" ] || [ "$st" = "fullscreen" ]; then
+            target_desktop="$arg2"
+          else
+            continue
+          fi
+          ;;
+        *)
           continue
-        fi
-        ;;
-      *)
-        continue
-        ;;
-    esac
+          ;;
+      esac
 
-    [ -z "$target_desktop" ] && continue
+      [ -z "$target_desktop" ] && continue
 
-    local d_name
-    d_name=$(bspc query -D -d "$target_desktop" --names 2>/dev/null || echo "$target_desktop")
-    local cur_layout
-    cur_layout=$(get_layout "$d_name")
+      local d_name
+      d_name=$(bspc query -D -d "$target_desktop" --names 2>/dev/null || echo "$target_desktop")
+      local cur_layout
+      cur_layout=$(get_layout "$d_name")
 
-    # Se for tiled nativo ou vazio, não interferir (deixa o BSPWM gerenciar nativamente)
-    [ -z "$cur_layout" ] || [ "$cur_layout" = "tiled" ] || [ "$cur_layout" = "-" ] && continue
+      [ -z "$cur_layout" ] || [ "$cur_layout" = "tiled" ] || [ "$cur_layout" = "-" ] && continue
 
-    # Bloqueio de reentrância para evitar loops com os próprios comandos bspc
-    touch "$lock_file"
-    # Pequeno debounce para estabilização do mapa da janela no X11
-    sleep 0.04
-    apply_layout "$cur_layout" "$d_name"
-    rm -f "$lock_file" 2>/dev/null || true
+      touch "$lock_file"
+      sleep 0.04
+      apply_layout "$cur_layout" "$d_name"
+      rm -f "$lock_file" 2>/dev/null || true
+    done
+
+    # Se o pipe do bspc fechar (ex: bspwm reiniciando), aguardar antes de reconectar
+    sleep 1
   done
 }
 

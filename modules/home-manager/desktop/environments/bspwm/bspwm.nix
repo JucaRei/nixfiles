@@ -739,8 +739,8 @@ in
       };
       Service = {
         ExecStart = "${pkgs.bsp-layout}/bin/bsp-layout watch";
-        Restart = "always";
-        RestartSec = 1;
+        Restart = "on-failure";
+        RestartSec = 2;
         PassEnvironment = [
           "DISPLAY"
           "XAUTHORITY"
