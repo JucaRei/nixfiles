@@ -18,19 +18,30 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 
 | Métrica | Baseline (Medido) | Fase 0 | Fase 1 | Fase 2 | Fase 3 | Fase 4 | Fase 5 | Fase 6 | Fase 7 | Fase 8 | Fase 9 | Meta Final |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | 281 | 284 | 285 | — | — | — |
-| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | 32.025 | 32.618 | 32.308 | — | — | $\le 29.000$ |
-| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | 13 | 13 | 16 | 16 | — | — | Helpers `lib.my` |
-| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | 30 | 30 | 30 | — | — | $\le 15$ |
-| **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | 66 | 66 | 83 | 83 | — | — | 0 |
-| **`rec {`** | 38 | 38 | 36 | 37 | 37 | 37 | 37 | 38 | 38 | — | — | 0 |
-| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | 3* | 3* | 3* | 3* | — | — | 0 |
-| **Avisos `statix`** | 76 | 76 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | — | — | 0 |
-| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | — | — | 0 |
+| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | 281 | 284 | 285 | 297 | — | — |
+| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | 32.025 | 32.618 | 32.308 | 32.294 | — | $\le 29.000$ |
+| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | 13 | 13 | 16 | 16 | 16 | — | Helpers `lib.my` |
+| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | 30 | 30 | 30 | 30 | — | $\le 15$ |
+| **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | 66 | 66 | 83 | 83 | 83 | — | 0 |
+| **`rec {`** | 38 | 38 | 36 | 37 | 37 | 37 | 37 | 38 | 38 | 38 | — | 0 |
+| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | 3* | 3* | 3* | 3* | 3* | — | 0 |
+| **Avisos `statix`** | 76 | 76 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | — | 0 |
+| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | — | 0 |
 
 ---
 
 ## Notas de Evolução
+
+### Fase 8 — Arquivos grandes (modularização de arquivos críticos)
+- **Modularização da Polybar (`T8.1`)**: Criado `modules/home-manager/desktop/environments/bspwm/polybar/options.nix` concentrando 166 linhas de opções `desktop.bspwm.polybar.*`. O agregador `polybar/modules.nix` foi particionado em 5 submódulos especializados por domínio (`workspaces.nix`, `media.nix`, `system.nix`, `network.nix`, `encap.nix`), mantendo cada arquivo em torno de 100-300 linhas e eliminando duplicações. Documentação detalhada registrada em `polybar/AGENTS.md`.
+- **Modularização de BSPWM e SXHKD (`T8.2`)**:
+  - `bspwm.nix`: Reduzido de 813 para 305 linhas. Opções raiz extraídas para `bspwm/options.nix` (24 linhas), regras declarativas de janelas extraídas para `bspwm/rules.nix` (215 linhas) e script de inicialização do WM extraído para o template `_bspwmrc.nix` (318 linhas). Atributos repetidos de `systemd.user.services` e `home.activation` foram consolidados, eliminando todos os avisos pendentes do `statix`.
+  - `sxhkd.nix`: Reduzido de 683 para 215 linhas. Derivações herméticas auxiliares extraídas para `_sxhkd-scripts.nix` (264 linhas) e atalhos particionados por grupos lógicos em `_sxhkd-bindings.nix` (217 linhas) abrangendo apps, janelas, navegação, layouts, workspaces, mídia/brilho e central de controle.
+- **Extração de Shell Hermético em Cleanup e Podman (`T8.3`)**:
+  - `system/cleanup/default.nix`: Reduzido de 583 para 397 linhas. Scripts de expurgo extraídos hermeticamente para `scripts/clean-orphaned.sh` (231 linhas) e `scripts/clean-hm-apps.sh` (6 linhas) usando `writeShellApplication` e validados com `shellcheck` (0 avisos). `PROTECTED_CONFIGS` e regras de exclusão 100% preservadas.
+  - `system/services/podman/default.nix`: Reduzido de 484 para 336 linhas. Opções declarativas extraídas para `podman/options.nix` (131 linhas) e script de saúde extraído para `scripts/podman-doctor.sh` (60 linhas) com `writeShellApplication` e `shellcheck` aprovado.
+- **T8.4 (Opcional - Tabela Unificada de Keybinds)**: Deixado como opcional para consulta prévia ao usuário, preservando as sintaxes específicas e a estabilidade dos ambientes.
+- **Validação Completa**: `statix check .` e `deadnix .` zerados (0 avisos). `nix fmt` limpo. Dry-run builds 100% aprovados para `juca@nitro` e `nixosConfigurations.rocinante`.
 
 ### Fase 7 — Compartilhar o que é comum
 - **Sets de Pacotes Centralizados (`T7.1`)**: Criado `modules/home-manager/desktop/packages/sets.nix` definindo `x11-core`, `x11-standalone`, `wayland-core`, `wayland-standalone`, `launcher`, `screenshot`, `clipboard`, `notifications` e `fonts`. Os 4 módulos `packages.nix` (`bspwm`, `dwm`, `hyprland`, `mangowm`) foram unificados e reduzidos de 846 linhas para 479 linhas (meta $\le 500$ linhas superada). Scripts utilitários de shell inline com templates extensos em `mangowm` e `bspwm` foram extraídos hermeticamente para subpastas `scripts/` e validados com `shellcheck`.
