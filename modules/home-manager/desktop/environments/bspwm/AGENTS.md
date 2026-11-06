@@ -12,7 +12,7 @@ Entrada do módulo: `default.nix`. Configuração do WM: `bspwm.nix`. Atalhos: `
 - **Auto-Raise**: Daemon `bspwm-auto-raise` via systemd (`systemd.user.services.bspwm-auto-raise`) escuta `node_focus` do `bspc subscribe`. Janelas flutuantes inativas são enviadas para `below` e a focada vai para `above`. Atalhos no SXHKD: `Super + =` (above) e `Super + _` (normal).
 - **Scratchpad**: Script nativo monitor-aware `bspwm-scratchpad` com `bspc` e `xdo` (substituiu o `tdrop`).
 - **Screenshots**: Script nativo multi-monitor `bspwm-screenshot` com `maim` e `slop`.
-- **Layouts**: Motor nativo reescrito em `pkgs/desktop/bspwm/bsp-layout/bsp-layout.sh`.
+- **Layouts**: Motor nativo em `pkgs/desktop/bspwm/bsp-layout/bsp-layout.sh` gerenciado pelo daemon `bsp-layout watch` (via systemd `bsp-layout.service` e hook de reload), garantindo persistência do layout por workspace e aplicação automática e reativa em novas janelas, fechamentos e movimentações entre desktops.
 - **Lockscreen**: `betterlockscreen` + `i3lock-color` + `xss-lock` (`lock.nix`). Customizável via `~/.config/bspwm/lock.conf` ou declarativamente.
 - **Recarga sem derrubar a sessão**: Hooks `home.activation.reload*` recarregam daemons (`sxhkd`, `polybar`, `dunst`, `picom`, `stalonetray`) sem reiniciar o processo do `bspwm`.
 - **xsettingsd**: Gerenciado pelo serviço systemd do módulo `desktop.theme`.

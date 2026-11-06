@@ -5,7 +5,10 @@
   bash,
   bspwm,
   coreutils,
+  gawk,
+  gnugrep,
   jq,
+  procps,
 }:
 
 stdenv.mkDerivation {
@@ -29,7 +32,10 @@ stdenv.mkDerivation {
           bash
           bspwm
           coreutils
+          gawk
+          gnugrep
           jq
+          procps
         ]
       }
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 # ==============================================================================
 # bsp-layout - Gerenciador Dinâmico e Reativo de Layouts para BSPWM (estilo DWL e Niri)
@@ -15,6 +14,10 @@ get_desktop() {
   if [ -z "$d" ]; then
     d=$(bspc query -D -d focused --names 2>/dev/null || true)
     [ -z "$d" ] && d=$(bspc query -D -d focused 2>/dev/null || echo "focused")
+  else
+    local name
+    name=$(bspc query -D -d "$d" --names 2>/dev/null || true)
+    [ -n "$name" ] && d="$name"
   fi
   echo "$d"
 }
@@ -42,7 +45,10 @@ cancel_presel() {
 apply_tall() {
   local d="$1"
   bspc desktop "$d" -l tiled 2>/dev/null || true
-  local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
+  local nodes=()
+  while IFS= read -r node; do
+    [ -n "$node" ] && nodes+=("$node")
+  done < <(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null || true)
   local count=${#nodes[@]}
   [ "$count" -lt 2 ] && { cancel_presel "$d"; return 0; }
 
@@ -66,7 +72,10 @@ apply_tall() {
 apply_rtall() {
   local d="$1"
   bspc desktop "$d" -l tiled 2>/dev/null || true
-  local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
+  local nodes=()
+  while IFS= read -r node; do
+    [ -n "$node" ] && nodes+=("$node")
+  done < <(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null || true)
   local count=${#nodes[@]}
   [ "$count" -lt 2 ] && { cancel_presel "$d"; return 0; }
 
@@ -90,7 +99,10 @@ apply_rtall() {
 apply_wide() {
   local d="$1"
   bspc desktop "$d" -l tiled 2>/dev/null || true
-  local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
+  local nodes=()
+  while IFS= read -r node; do
+    [ -n "$node" ] && nodes+=("$node")
+  done < <(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null || true)
   local count=${#nodes[@]}
   [ "$count" -lt 2 ] && { cancel_presel "$d"; return 0; }
 
@@ -114,7 +126,10 @@ apply_wide() {
 apply_rwide() {
   local d="$1"
   bspc desktop "$d" -l tiled 2>/dev/null || true
-  local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
+  local nodes=()
+  while IFS= read -r node; do
+    [ -n "$node" ] && nodes+=("$node")
+  done < <(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null || true)
   local count=${#nodes[@]}
   [ "$count" -lt 2 ] && { cancel_presel "$d"; return 0; }
 
@@ -138,7 +153,10 @@ apply_rwide() {
 apply_columns() {
   local d="$1"
   bspc desktop "$d" -l tiled 2>/dev/null || true
-  local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
+  local nodes=()
+  while IFS= read -r node; do
+    [ -n "$node" ] && nodes+=("$node")
+  done < <(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null || true)
   local count=${#nodes[@]}
   [ "$count" -lt 2 ] && { cancel_presel "$d"; return 0; }
 
@@ -156,7 +174,10 @@ apply_columns() {
 apply_grid() {
   local d="$1"
   bspc desktop "$d" -l tiled 2>/dev/null || true
-  local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
+  local nodes=()
+  while IFS= read -r node; do
+    [ -n "$node" ] && nodes+=("$node")
+  done < <(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null || true)
   local count=${#nodes[@]}
   [ "$count" -lt 2 ] && { cancel_presel "$d"; return 0; }
 
@@ -167,6 +188,11 @@ apply_grid() {
     bspc node "${nodes[2]}" -n "${nodes[0]}" 2>/dev/null || true
     bspc node "${nodes[1]}" -p south 2>/dev/null || true
     bspc node "${nodes[3]}" -n "${nodes[1]}" 2>/dev/null || true
+  elif [ "$count" -eq 3 ]; then
+    bspc node "${nodes[0]}" -p east 2>/dev/null || true
+    bspc node "${nodes[1]}" -n "${nodes[0]}" 2>/dev/null || true
+    bspc node "${nodes[1]}" -p south 2>/dev/null || true
+    bspc node "${nodes[2]}" -n "${nodes[1]}" 2>/dev/null || true
   fi
   bspc node '@/' -E 2>/dev/null || true
   bspc node '@/' -B 2>/dev/null || true
@@ -245,7 +271,7 @@ prev_layout() {
   local curr
   curr=$(get_layout "$d")
   curr=$(echo "$curr" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
-  local prev="${LAYOUT_LIST[-1]}"
+  local prev="${LAYOUT_LIST[$(( ${#LAYOUT_LIST[@]} - 1 ))]}"
   for ((i=0; i<${#LAYOUT_LIST[@]}; i++)); do
     if [ "${LAYOUT_LIST[$i]}" = "$curr" ]; then
       local prev_idx=$(( (i - 1 + ${#LAYOUT_LIST[@]}) % ${#LAYOUT_LIST[@]} ))
@@ -265,7 +291,10 @@ remove_layout() {
 
 apply_zoom() {
   local d="$(get_desktop "$1")"
-  local nodes=($(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null))
+  local nodes=()
+  while IFS= read -r node; do
+    [ -n "$node" ] && nodes+=("$node")
+  done < <(bspc query -N -d "$d" -n .window.!floating.!hidden 2>/dev/null || true)
   local count=${#nodes[@]}
   [ "$count" -lt 2 ] && return 0
 
@@ -284,9 +313,125 @@ apply_zoom() {
   [ "$l" != "tiled" ] && apply_layout "$l" "$d"
 }
 
+reload_layouts() {
+  local lock_file="$STATE_DIR/.lock"
+  touch "$lock_file"
+  for sf in "$STATE_DIR"/*; do
+    [ -f "$sf" ] || continue
+    local d_name
+    d_name=$(basename "$sf")
+    [ "$d_name" = "watcher.pid" ] && continue
+    [ "$d_name" = ".lock" ] && continue
+    local saved_layout
+    saved_layout=$(cat "$sf" 2>/dev/null || true)
+    if [ -n "$saved_layout" ] && [ "$saved_layout" != "tiled" ] && [ "$saved_layout" != "-" ]; then
+      apply_layout "$saved_layout" "$d_name"
+    fi
+  done
+  rm -f "$lock_file" 2>/dev/null || true
+}
+
 watch_layouts() {
-  pkill -f "bsp-layout.*watch" 2>/dev/null || true
-  exit 0
+  local pid_file="$STATE_DIR/watcher.pid"
+  local lock_file="$STATE_DIR/.lock"
+
+  # Limpar locks anteriores
+  rm -f "$lock_file" 2>/dev/null || true
+
+  # Prevenir múltiplas instâncias concorrentes do daemon
+  if [ -f "$pid_file" ]; then
+    local old_pid
+    old_pid=$(cat "$pid_file" 2>/dev/null || true)
+    if [ -n "$old_pid" ] && kill -0 "$old_pid" 2>/dev/null; then
+      if [ "$old_pid" != "$$" ]; then
+        kill "$old_pid" 2>/dev/null || true
+        sleep 0.1
+      fi
+    fi
+  fi
+  echo "$$" > "$pid_file"
+
+  cleanup() {
+    rm -f "$pid_file" "$lock_file" 2>/dev/null || true
+    exit 0
+  }
+  trap cleanup INT TERM EXIT HUP
+
+  # Reaplicar layouts salvos para todos os desktops na inicialização do daemon
+  reload_layouts
+
+  # Escutar eventos via IPC do bspwm:
+  # - node_manage: nova janela aberta
+  # - node_unmanage: janela fechada
+  # - node_transfer: janela movida entre desktops
+  # - node_state: janela alternada (floating, fullscreen)
+  bspc subscribe node_manage node_unmanage node_transfer node_state 2>/dev/null | while read -r event arg1 arg2 arg3 rest; do
+    # Se o lock estiver ativo (já estamos recalculando um layout), ignorar
+    [ -f "$lock_file" ] && continue
+
+    local target_desktop=""
+
+    case "$event" in
+      node_manage|node_unmanage)
+        # arg1: monitor_id, arg2: desktop_id, arg3: node_id
+        target_desktop="$arg2"
+        ;;
+      node_transfer)
+        # Formato: node_transfer <src_m> <src_d> <src_n> <dst_m> <dst_d> <dst_n>
+        # arg1=src_m, arg2=src_d, arg3=src_n, rest=<dst_m> <dst_d> <dst_n>
+        local src_d="$arg2"
+        local dst_d
+        dst_d=$(echo "$rest" | awk '{print $2}')
+
+        # Se for transferência dentro do mesmo desktop (reordenação interna gerada pelo bsp-layout), ignorar
+        [ "$src_d" = "$dst_d" ] && continue
+
+        # Transferência entre desktops: recalcular origem se tiver layout ativo
+        local src_name
+        src_name=$(bspc query -D -d "$src_d" --names 2>/dev/null || echo "$src_d")
+        local src_layout
+        src_layout=$(get_layout "$src_name")
+        if [ -n "$src_layout" ] && [ "$src_layout" != "tiled" ] && [ "$src_layout" != "-" ]; then
+          touch "$lock_file"
+          apply_layout "$src_layout" "$src_name"
+          rm -f "$lock_file" 2>/dev/null || true
+        fi
+
+        target_desktop="$dst_d"
+        ;;
+      node_state)
+        # Formato: node_state <m_id> <d_id> <n_id> <state> <on|off>
+        # arg1=m_id, arg2=d_id, arg3=n_id, rest=<state> <on|off>
+        local st
+        st=$(echo "$rest" | awk '{print $1}')
+        if [ "$st" = "floating" ] || [ "$st" = "fullscreen" ]; then
+          target_desktop="$arg2"
+        else
+          continue
+        fi
+        ;;
+      *)
+        continue
+        ;;
+    esac
+
+    [ -z "$target_desktop" ] && continue
+
+    local d_name
+    d_name=$(bspc query -D -d "$target_desktop" --names 2>/dev/null || echo "$target_desktop")
+    local cur_layout
+    cur_layout=$(get_layout "$d_name")
+
+    # Se for tiled nativo ou vazio, não interferir (deixa o BSPWM gerenciar nativamente)
+    [ -z "$cur_layout" ] || [ "$cur_layout" = "tiled" ] || [ "$cur_layout" = "-" ] && continue
+
+    # Bloqueio de reentrância para evitar loops com os próprios comandos bspc
+    touch "$lock_file"
+    # Pequeno debounce para estabilização do mapa da janela no X11
+    sleep 0.04
+    apply_layout "$cur_layout" "$d_name"
+    rm -f "$lock_file" 2>/dev/null || true
+  done
 }
 
 CMD="${1:-get}"
@@ -325,12 +470,19 @@ case "$CMD" in
   watch|watcher|daemon)
     watch_layouts
     ;;
+  reload|restart)
+    reload_layouts "$@"
+    ;;
+  stop|kill)
+    pkill -f "bsp-layout.*watch" 2>/dev/null || true
+    rm -f "$STATE_DIR/watcher.pid" "$STATE_DIR/.lock" 2>/dev/null || true
+    ;;
   layouts)
     printf "%s\n" "${LAYOUT_LIST[@]}"
     ;;
   help|-h|--help)
     echo "bsp-layout - Gerenciador dinâmico de layouts para BSPWM (estilo DWL e Niri)"
-    echo "Comandos: get, set <layout>, once <layout>, next, prev, cycle, zoom, watch, remove, layouts"
+    echo "Comandos: get, set <layout>, once <layout>, next, prev, cycle, zoom, watch, reload, stop, remove, layouts"
     ;;
   tall|rtall|wide|rwide|columns|niri|grid|even|monocle|tiled)
     set_layout "$CMD" "$@"

@@ -500,8 +500,9 @@ in
               ) &
             ''}
 
-            # Matar processos residuais de bsp-layout watcher se existirem
+            # Iniciar daemon de monitoramento e persistência de layouts (bsp-layout)
             pkill -f "bsp-layout.*watch" 2>/dev/null || true
+            systemctl --user restart bsp-layout.service 2>/dev/null || (${pkgs.bsp-layout}/bin/bsp-layout watch &)
 
             # Iniciar daemon de bloqueio de tela (xss-lock) e configurar inatividade (XSS / DPMS)
             ${lib.optionalString (config.desktop.bspwm.lock.enable or true) ''
@@ -730,6 +731,39 @@ in
       };
     };
 
+    systemd.user.services.bsp-layout = {
+      Unit = {
+        Description = "BSPWM Dynamic Layout Manager Daemon (bsp-layout)";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        ExecStart = "${pkgs.bsp-layout}/bin/bsp-layout watch";
+        Restart = "always";
+        RestartSec = 1;
+        PassEnvironment = [
+          "DISPLAY"
+          "XAUTHORITY"
+          "XDG_RUNTIME_DIR"
+        ];
+        Environment = [
+          "PATH=${
+            lib.makeBinPath [
+              pkgs.coreutils
+              pkgs.bspwm
+              pkgs.jq
+              pkgs.gawk
+              pkgs.gnugrep
+              pkgs.procps
+            ]
+          }:/run/current-system/sw/bin"
+        ];
+      };
+      Install = {
+        WantedBy = [ "graphical-session.target" ];
+      };
+    };
+
     home = {
       activation.reloadBspwmColors = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         if ${pkgs.procps}/bin/pgrep -x bspwm >/dev/null 2>&1; then
@@ -744,6 +778,13 @@ in
         if systemctl --user is-active --quiet graphical-session.target 2>/dev/null || pgrep -f bspwm >/dev/null 2>&1; then
           systemctl --user daemon-reload 2>/dev/null || true
           systemctl --user restart bspwm-auto-raise.service 2>/dev/null || (${autoRaiseScript} &)
+        fi
+      '';
+
+      activation.reloadBspLayout = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        if systemctl --user is-active --quiet graphical-session.target 2>/dev/null || ${pkgs.procps}/bin/pgrep -x bspwm >/dev/null 2>&1; then
+          systemctl --user daemon-reload 2>/dev/null || true
+          systemctl --user restart bsp-layout.service 2>/dev/null || (${pkgs.bsp-layout}/bin/bsp-layout watch &)
         fi
       '';
 
