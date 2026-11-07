@@ -1,0 +1,50 @@
+name: "Check & Lint"
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - tests2
+  pull_request:
+    branches:
+      - main
+      - master
+      - tests2
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Flake Check and Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: determinate.systems/nix-installer-action@v16
+
+      - name: Flake check (no-build)
+        run: nix flake check --no-build
+
+      - name: Check Nix code formatting
+        run: nix fmt -- --check
+
+      - name: Run Statix, Deadnix and ShellCheck
+        run: |
+          nix shell --inputs-from . nixpkgs#statix nixpkgs#deadnix nixpkgs#shellcheck -c bash -c '
+            echo "::group::Statix"
+            statix check .
+            echo "::endgroup::"
+
+            echo "::group::Deadnix"
+            deadnix .
+            echo "::endgroup::"
+
+            echo "::group::ShellCheck"
+            find . -name "*.sh" -not -path "./.git/*" -exec shellcheck {} +
+            echo "::endgroup::"
+          '
+
