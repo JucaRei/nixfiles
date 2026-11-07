@@ -18,6 +18,7 @@ Configuração Home Manager standalone para o MacBook Air 4,1 rodando Fedora.
   - Papel de parede: utilizar `swaybg` (o `hyprpaper` não suporta PRIME export no Sandy Bridge).
   - Idle fade: `pre_action_fade_seconds = 0.0` no Noctalia para evitar flickering.
 - **MangoWM**: Sintaxe estrita `snake_case` em todas as diretivas.
+- **Tecla Modificadora (MacBook)**: Tecla Command (⌘) mapeada como Super principal (`desktop.modifierKey = "Super"`).
 - **Backlight**: Controlado via ACPI nativo (`acpi_backlight=native`) em passos graduais de 2%.
 
 ## Como prosseguir

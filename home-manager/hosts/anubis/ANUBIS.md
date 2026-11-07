@@ -57,6 +57,7 @@ Layout Mac com dead keys para acentos PT-BR (`layout = "us"`, `variant = "intl"`
    - Arquivo `/etc/X11/xorg.conf.d/00-keyboard.conf` gerado automaticamente garantindo suporte no Xorg e no console virtual (`us-intl`).
 2. **Nível de Usuário (Home Manager)**:
    - `home.keyboard = { layout = "us"; variant = "intl"; model = "apple"; };` em [default.nix](./default.nix).
+   - `desktop.modifierKey = "Super";` garantindo que a tecla física Command (⌘ / Mod4) funcione como o modificador principal nos Window Managers (MangoWM/Hyprland), deixando a tecla Option (⌥ / Mod1) como modificador secundário (Alt).
 
 ### Fuso Horário (Timezone - America/Sao_Paulo)
 - Configurado especificamente para o Anubis em [default.nix](./default.nix):

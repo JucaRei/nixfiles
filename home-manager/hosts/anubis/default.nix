@@ -36,6 +36,8 @@
     };
 
     desktop = {
+      modifierKey = "Super"; # Tecla Command (⌘) do Mac como Super (Mod4) principal
+
       wayland.noctalia.settings = {
         idle = {
           behavior_order = [
