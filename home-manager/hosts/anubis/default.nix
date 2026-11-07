@@ -31,6 +31,7 @@
         pkgs.nh
         pkgs.libva-utils
         pkgs.intel-gpu-tools
+        pkgs.scrcpy
       ];
     };
 
