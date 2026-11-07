@@ -3,10 +3,12 @@
 ```
 lib/
 ├── default.nix        reexporta helpers.nix
-├── helpers.nix        mkHome, mkNixos, mkIso, mkChecks, forAllSystems
+├── helpers.nix        mkHome, mkNixos, mkIso, mkHosts, mkChecks, forAllSystems
 ├── import-dir.nix     auto-descoberta e importação declarativa de diretórios de módulos
 ├── nixpkgs-config.nix configuração canônica unificada de nixpkgs
 ├── options.nix        helpers de criação de opções (mkOpt, mkBool, mkStr, etc.)
+├── disk/
+│   └── btrfs.nix      gerador declarativo de layout de disco Disko + Btrfs
 └── nixgl/
     ├── default.nix    construtor do wrapper (Nix)
     └── wrapper.sh     lógica de seleção de GPU (shell real, com shellcheck)
@@ -20,7 +22,28 @@ lib/
 - `mkPkgs`: `pkgs` do HM standalone (overlays nixgl, nur e `outputs.overlays`; `nixpkgs.*` do módulo HM não vale nesse caso).
 - `pinNixGLDefault`: com `nixGLType` explícito, fixa `nixgl.auto.nixGLDefault` em Intel/Mesa. Ainda é necessário porque `desktop/environments/default.nix` usa `pkgs.nixgl.auto.nixGLDefault`. Se esse uso for trocado por um script `nixGL` próprio, o overlay pode ser removido.
 - `nvidiaLegacyHosts`: lista que gera `isNvidia` no HM integrado. Pendência: trocar por option de hardware via `osConfig`.
-- `mkChecks`: só **avalia** cada `nixosConfiguration` e `homeConfiguration` em `nix flake check` (não builda).
+- `mkHosts`: constrói todas as `homeConfigurations`, `nixosConfigurations` e imagens `iso-*` a partir de `hosts.nix`.
+- `mkChecks`: avalia cada `homeConfiguration` standalone e gera derivações herméticas para `checks.fmt` (`nixfmt --check`) e `checks.shellcheck` (todos os scripts `.sh` do repo).
+
+## hosts.nix e profiles/
+
+- `hosts.nix`: Fonte única da verdade contendo especificações declarativas de cada máquina (`kind`, `desktop`, `platform`, `vm`, `nixGLType`).
+- `profiles/home/`: Perfis compartilhados de usuário (`workstation`, `minimal`, `vm`).
+- `profiles/nixos/`: Perfis compartilhados de sistema operacional (`desktop`, `server`, `vm`).
+
+## disk/btrfs.nix (`lib.my.disk.btrfs`)
+
+Função parametrizada para particionamento Disko e montagens de `fileSystems`:
+- Suporta tabelas de partição `gpt` (UEFI) e `msdos` (Legacy BIOS / CSM).
+- Subvolumes Btrfs padronizados (`@`, `@home`, `@snapshots`, `@nix`, `@var_log`) com compressão configurável (`zstd`).
+- Suporte a swap dedicado e criptografia de disco com LUKS.
+
+## Motor de Tema (`lib.my.theme` e `desktop.theme.lib`)
+
+Exporta a biblioteca de manipulação de cores definida em `modules/home-manager/desktop/theme/lib.nix`:
+- `stripHash`, `hexToTuple`, `hexTo0x`, `rgb`, `rgba`, `cssRgb`, `cssRgba`.
+- `withAlpha hex alpha`: interpola opacidade alfa em valores hexadecimais.
+- `generateTmTheme { name, colors }`: gera dinamicamente esquemas de sintaxe TextMate (`.tmTheme`) para ferramentas como `bat` sem IFD e sem dependência de temas externos.
 
 ## options.nix (`lib.my` / `myLib`)
 

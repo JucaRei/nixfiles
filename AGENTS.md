@@ -12,13 +12,16 @@ Usuário padrão: `juca`. Idioma: comentários e docs em pt-BR; identificadores 
 
 | Caminho | Conteúdo |
 |---|---|
-| `flake.nix` | Entrada: inputs, hosts, devShells, overlays, packages, checks |
-| `lib/` | `helpers.nix` (`mkNixos`, `mkHome`, `mkIso`, `mkChecks`) e `nixgl/` |
+| `flake.nix` | Entrada: inputs, hosts (`mkHosts`), devShells, overlays, packages, checks |
+| `hosts.nix` | Registro declarativo canônico de todos os hosts (HM, NixOS, ISOs) |
+| `profiles/` | Perfis compartilhados (`home/` e `nixos/`: workstation, minimal, vm) |
+| `lib/` | `helpers.nix`, `options.nix` (`lib.my`), `import-dir.nix`, `disk/btrfs.nix` e `nixgl/` |
 | `nixos/` | Entrada do sistema (`default.nix`), `hosts/<host>/`, `users/` |
 | `home-manager/` | Entrada do usuário (`default.nix`), `hosts/<host>/`, `users/` |
 | `modules/nixos/` | Módulos NixOS reutilizáveis (desktop, hardware, system) |
 | `modules/home-manager/` | Módulos HM reutilizáveis (`desktop/` incluindo `theme/`, `system/`) |
 | `overlays/`, `pkgs/` | Overlays e pacotes próprios |
+| `docs/OPTIONS.md` | Catálogo declarativo gerado com todas as opções `desktop.*` e `system.*` |
 
 ## Hosts
 
@@ -45,6 +48,9 @@ Diretórios em `nixos/hosts/` **sem** saída no flake (legado, não assumir que 
 6. **Comentários e docs existentes** são preservados ao editar.
 7. **Aceleração gráfica (nixGLWrapper):** Qualquer aplicação gráfica que utilize aceleração de hardware (OpenGL, Vulkan, EGL, VAAPI ou apps Electron como navegadores, terminais GPU, players multimídia, IDEs, Discord e WMs/shells) DEVE receber `nixGLWrapper ? lib.id` nos argumentos do módulo e envolver seus pacotes (`(nixGLWrapper pkgs.<app>)` ou `package = nixGLWrapper ...;`). No NixOS ou com nixGL desativado, `nixGLWrapper` é automaticamente `lib.id` (no-op).
 8. **Scripts de shell herméticos e `writeShellApplication`:** Scripts utilitários extraídos para subdiretórios `scripts/` devem ser herméticos e carregados via `writeShellApplication`. Para evitar quebras na construção da derivação por avisos cosméticos ou pelo preâmbulo gerado pelo Nixpkgs (como SC2012, SC2034, SC2086, SC2089, SC2090), configure `excludeShellChecks` no builder.
+9. **Helpers de opções (`lib.my` / `myLib`):** Declarar opções através dos helpers `lib.my.mkBool`, `lib.my.mkStr`, `lib.my.mkInt`, `lib.my.mkEnum`, `lib.my.mkListOf`, `lib.my.mkOpt`, etc. A descrição é estritamente obrigatória em todas as opções.
+10. **Auto-importação (`lib.my.importDir`):** Diretórios agregadores de módulos usam importação automática declarativa. Novos submódulos com `default.nix` são carregados automaticamente sem edição de listas manuais. Pastas/arquivos iniciados por `_` e o diretório `disabled/` são ignorados.
+11. **Motor de tema semântico (`desktop.theme`):** Cores de interface e ferramentas devem derivar de `config.desktop.theme.colors` ou `.colorsBare`. Suporta paletas pré-definidas, `theme.overrides`, `theme.custom` e exclusões declarativas via `theme.exclude`. Manipulação de cores (alpha, tuplas RGB, hex) usa exclusivamente os helpers de `lib.my.theme.*` (`theme/lib.nix`).
 
 ## Validação (obrigatória antes de pedir o switch)
 

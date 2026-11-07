@@ -18,19 +18,29 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 
 | Métrica | Baseline (Medido) | Fase 0 | Fase 1 | Fase 2 | Fase 3 | Fase 4 | Fase 5 | Fase 6 | Fase 7 | Fase 8 | Fase 9 | Meta Final |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | 281 | 284 | 285 | 297 | — | — |
-| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | 32.025 | 32.618 | 32.308 | 32.294 | — | $\le 29.000$ |
-| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | 13 | 13 | 16 | 16 | 16 | — | Helpers `lib.my` |
-| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | 30 | 30 | 30 | 30 | — | $\le 15$ |
-| **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | 66 | 66 | 83 | 83 | 83 | — | 0 |
-| **`rec {`** | 38 | 38 | 36 | 37 | 37 | 37 | 37 | 38 | 38 | 38 | — | 0 |
-| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | 3* | 3* | 3* | 3* | 3* | — | 0 |
-| **Avisos `statix`** | 76 | 76 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | — | 0 |
-| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | — | 0 |
+| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | 281 | 284 | 285 | 297 | 297 | — |
+| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | 32.025 | 32.618 | 32.308 | 32.294 | 33.133 | $\le 29.000$ |
+| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | 13 | 13 | 16 | 16 | 16 | 16 | Helpers `lib.my` |
+| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | 30 | 30 | 30 | 30 | 30 | $\le 15$ |
+| **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | 66 | 66 | 83 | 83 | 83 | 83 | 0 |
+| **`rec {`** | 38 | 38 | 36 | 37 | 37 | 37 | 37 | 38 | 38 | 38 | 38 | 0 |
+| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | 3* | 3* | 3* | 3* | 3* | 3* | 0 |
+| **Avisos `statix`** | 76 | 76 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 ---
 
 ## Notas de Evolução
+
+### Fase 9 — Qualidade contínua e docs (CI, checks herméticos e documentação)
+- **CI com GitHub Actions (`T9.1`)**: Criado `.github/workflows/check.yml` (somente leitura, permissões mínimas `contents: read`, determinístico sem dependência de secrets) executando `actions/checkout@v4`, `determinate.systems/nix-installer-action@v16`, `nix flake check --no-build`, checagem de formatação `nix fmt -- --check`, e validação de código estático com `statix check .`, `deadnix .` e `shellcheck` em todos os scripts `.sh` do repositório.
+- **Checks Herméticos no Flake e DevShell (`T9.2`)**:
+  - `flake.nix`: Adicionado wrapper hermético para `formatter` que aceita invocação bare ou argumentos específicos sem travar em stdin.
+  - `lib/helpers.nix`: Adicionados checks de derivação `checks.fmt` (validação de formatação com `nixfmt --check`) e `checks.shellcheck` (validação de todos os 54 scripts `.sh` hermeticamente no builder) no `mkChecks`.
+  - `shell.nix`: devShell atualizado com `shellcheck`, `statix`, `deadnix`, `nixfmt` e alias utilitários.
+  - Scripts de shell do repositório (`clean-orphaned.sh`, `theme-env.sh`, `bsp-layout.sh`) revisados e corrigidos para aprovação 100% limpa com zero avisos no ShellCheck.
+- **Catálogo de Opções (`T9.3`)**: Gerado `docs/OPTIONS.md` via `pkgs.nixosOptionsDoc` contendo mais de 21.000 linhas detalhando de ponta a ponta cada opção declarativa dos namespaces `desktop.*`, `system.*` e `hardware.*` (Home Manager e NixOS) com tipos, valores padrão, descrições e arquivos de origem com links relativos.
+- **Documentação Transversal e Relatório Final (`T9.4`)**: `AGENTS.md` raiz e `lib/AGENTS.md` atualizados detalhando a nova arquitetura modular: `hosts.nix`, `profiles/`, `import-dir.nix`, `options.nix` (`lib.my.*`), motor semântico de temas (`theme/lib.nix`) e infraestrutura de CI.
 
 ### Fase 8 — Arquivos grandes (modularização de arquivos críticos)
 - **Modularização da Polybar (`T8.1`)**: Criado `modules/home-manager/desktop/environments/bspwm/polybar/options.nix` concentrando 166 linhas de opções `desktop.bspwm.polybar.*`. O agregador `polybar/modules.nix` foi particionado em 5 submódulos especializados por domínio (`workspaces.nix`, `media.nix`, `system.nix`, `network.nix`, `encap.nix`), mantendo cada arquivo em torno de 100-300 linhas e eliminando duplicações. Documentação detalhada registrada em `polybar/AGENTS.md`.
