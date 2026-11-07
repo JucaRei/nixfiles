@@ -13,8 +13,9 @@ let
       nil
       statix
       deadnix
+      shellcheck
       home-manager
-      (pkgs.nixfmt-tree or pkgs.nixfmt)
+      (pkgs.nixfmt or pkgs.nixfmt-tree)
       nix-direnv
       direnv
       htop

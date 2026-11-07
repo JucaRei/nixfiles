@@ -85,7 +85,18 @@
 
       # Formatter for .nix files ('nix fmt')
       formatter = helper.forAllSystems (
-        system: nixpkgs.legacyPackages.${system}.nixfmt-tree or nixpkgs.legacyPackages.${system}.nixfmt
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          nixfmtPkg = pkgs.nixfmt or pkgs.nixfmt-rfc-style;
+        in
+        pkgs.writeShellScriptBin "nixfmt-wrapper" ''
+          if [ $# -eq 0 ]; then
+            exec find . -name "*.nix" -not -path "*/.git/*" -exec ${pkgs.lib.getExe nixfmtPkg} {} +
+          else
+            exec ${pkgs.lib.getExe nixfmtPkg} "$@"
+          fi
+        ''
       );
 
       # Automated checks run via 'nix flake check'

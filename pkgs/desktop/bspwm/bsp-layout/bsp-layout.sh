@@ -23,7 +23,8 @@ get_desktop() {
 }
 
 get_layout() {
-  local d="$(get_desktop "$1")"
+  local d
+  d="$(get_desktop "$1")"
   local f="$STATE_DIR/$d"
   if [ -f "$f" ]; then
     cat "$f" 2>/dev/null || echo "tiled"
@@ -223,7 +224,8 @@ apply_tiled() {
 
 apply_layout() {
   local layout="$1"
-  local d="$(get_desktop "$2")"
+  local d
+  d="$(get_desktop "$2")"
   case "$layout" in
     tall) apply_tall "$d" ;;
     rtall) apply_rtall "$d" ;;
@@ -240,7 +242,8 @@ apply_layout() {
 
 set_layout() {
   local layout="$1"
-  local d="$(get_desktop "$2")"
+  local d
+  d="$(get_desktop "$2")"
   if [ "$layout" = "tiled" ]; then
     remove_layout "$d"
     return 0
@@ -250,7 +253,8 @@ set_layout() {
 }
 
 next_layout() {
-  local d="$(get_desktop "$1")"
+  local d
+  d="$(get_desktop "$1")"
   local curr
   curr=$(get_layout "$d")
   curr=$(echo "$curr" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
@@ -267,7 +271,8 @@ next_layout() {
 }
 
 prev_layout() {
-  local d="$(get_desktop "$1")"
+  local d
+  d="$(get_desktop "$1")"
   local curr
   curr=$(get_layout "$d")
   curr=$(echo "$curr" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
@@ -284,13 +289,15 @@ prev_layout() {
 }
 
 remove_layout() {
-  local d="$(get_desktop "$1")"
+  local d
+  d="$(get_desktop "$1")"
   rm -f "$STATE_DIR/$d" 2>/dev/null || true
   apply_tiled "$d"
 }
 
 apply_zoom() {
-  local d="$(get_desktop "$1")"
+  local d
+  d="$(get_desktop "$1")"
   local nodes=()
   while IFS= read -r node; do
     [ -n "$node" ] && nodes+=("$node")
@@ -371,7 +378,7 @@ watch_layouts() {
     # - node_unmanage: janela fechada
     # - node_transfer: janela movida entre desktops
     # - node_state: janela alternada (floating, fullscreen)
-    bspc subscribe node | while read -r event arg1 arg2 arg3 rest; do
+    bspc subscribe node | while read -r event _arg1 arg2 _arg3 rest; do
       [ -f "$lock_file" ] && continue
 
       local target_desktop=""

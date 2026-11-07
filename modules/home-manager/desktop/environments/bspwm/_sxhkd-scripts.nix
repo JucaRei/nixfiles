@@ -262,4 +262,3 @@ in
     toggleDesktopScript
     ;
 }
-

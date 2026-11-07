@@ -256,13 +256,16 @@ let
     };
 
   # `nix flake check`: o flake check nativo já avalia todas as nixosConfigurations.
-  # Adicionamos em `checks` apenas as homeConfigurations standalone para validação completa.
+  # Adicionamos em `checks` as homeConfigurations standalone para validação completa,
+  # além de verificações de qualidade contínua (fmt e shellcheck).
   mkChecks =
     { self, ... }:
     forAllSystems (
       system:
       let
         pkgs = inputs.nixpkgs.legacyPackages.${system};
+        nixfmtPkg = pkgs.nixfmt or pkgs.nixfmt-rfc-style or pkgs.nixfmt-tree;
+
         # drvPath sem contexto: força a avaliação mas não vira dependência de build.
         evalOnly =
           name: drv: pkgs.writeText "eval-${name}" (builtins.unsafeDiscardStringContext drv.drvPath);
@@ -272,9 +275,31 @@ let
             evalOnly name cfg.activationPackage
           )
         ) self.homeConfigurations;
+
+        qualityChecks = {
+          fmt =
+            pkgs.runCommand "check-fmt"
+              {
+                nativeBuildInputs = [ nixfmtPkg ];
+              }
+              ''
+                find ${self} -name "*.nix" -not -path "*/.git/*" -exec ${lib.getExe nixfmtPkg} --check {} +
+                touch $out
+              '';
+
+          shellcheck =
+            pkgs.runCommand "check-shellcheck"
+              {
+                nativeBuildInputs = [ pkgs.shellcheck ];
+              }
+              ''
+                find ${self} -name "*.sh" -not -path "*/.git/*" -exec shellcheck {} +
+                touch $out
+              '';
+        };
       in
       # Todos os hosts atuais são x86_64; evita avaliar em aarch64.
-      lib.optionalAttrs (system == defaults.platform) home
+      lib.optionalAttrs (system == defaults.platform) (home // qualityChecks)
     );
 in
 {
