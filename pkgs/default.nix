@@ -44,7 +44,10 @@ pkgs: {
   nixos-tweaker = pkgs.callPackage ./tools/nixos-tweaker { };
   docker-compose-check = pkgs.callPackage ./tools/docker-compose-check { };
   nixpkgs-plus = pkgs.callPackage ./tools/nixfmt-plus { };
-  nix-check-capped = pkgs.callPackage ./tools/nix-check-capped { };
+  nix-capped = pkgs.callPackage ./tools/nix-capped { };
+  nix-check-capped = pkgs.callPackage ./tools/nix-check-capped {
+    nix-capped = pkgs.callPackage ./tools/nix-capped { };
+  };
 
   # Browser front-end
   headscale-ui = pkgs.callPackage ./tools/headscale-ui { };

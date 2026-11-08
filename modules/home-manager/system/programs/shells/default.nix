@@ -127,6 +127,7 @@ in
       home = {
         packages = [
           pkgs.comma
+          pkgs.nix-capped
           pkgs.nix-check-capped
         ]
         ++ optional (cfg.aliases.nix.diffProgram != "builtin") pkgs.${cfg.aliases.nix.diffProgram};
@@ -135,7 +136,8 @@ in
           n = "nix";
           nf = "nix flake";
           nbr = "nix build --rebuild";
-          nfc = "nix flake check";
+          nfc = "nix-check-capped";
+          check = "nix-check-capped";
           nfc60 = "nix-check-capped";
           nd = nixDiff.${cfg.aliases.nix.diffProgram};
           nb = mkIf (!isNixOS) "${pkgs.nix}/bin/nix build --no-link --print-out-paths";
