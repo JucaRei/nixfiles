@@ -85,8 +85,8 @@ in
         "nowatchdog"
       ];
 
-      # Disable Plymouth — hangs at "terminate Plymouth Boot Screen" on 8600M GT + nouveau
-      plymouth.enable = false;
+      # Justification: Override upstream installation-cd-graphical-base.nix hardcoded true; Plymouth hangs on 8600M GT + nouveau
+      plymouth.enable = mkForce false;
 
       # Blacklist open-source Broadcom drivers that conflict with broadcom_sta (wl)
       blacklistedKernelModules = [
