@@ -1,13 +1,6 @@
-# Bridge module exposing desktop settings in NixOS for integrated Home Manager.
-{
-  config,
-  lib,
-  username ? "juca",
-  ...
-}:
-let
-  cfg = config.desktop;
-in
+# Declarative desktop settings options for NixOS hosts.
+# Consumed by integrated Home Manager via osConfig.desktop.
+{ lib, ... }:
 {
   options.desktop = {
     theme = {
@@ -23,19 +16,5 @@ in
     monitors =
       lib.my.mkListOf (lib.types.attrsOf lib.types.anything) [ ]
         "Lista de monitores para o Home Manager.";
-  };
-
-  config = lib.mkIf (config ? home-manager && config.home-manager.users ? ${username}) {
-    home-manager.users.${username} = {
-      desktop = {
-        theme = {
-          name = lib.mkDefault cfg.theme.name;
-          accent = lib.mkDefault cfg.theme.accent;
-        };
-        modifierKey = lib.mkDefault cfg.modifierKey;
-        wallpaper.directory = lib.mkDefault cfg.wallpaper.directory;
-        monitors = lib.mkDefault cfg.monitors;
-      };
-    };
   };
 }

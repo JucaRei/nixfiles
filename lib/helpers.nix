@@ -178,6 +178,22 @@ let
             useUserPackages = true;
             backupFileExtension = "hm.backup";
             users.${username} = import ../home-manager;
+            sharedModules = [
+              (
+                { osConfig, ... }:
+                lib.mkIf (osConfig ? desktop) {
+                  desktop = {
+                    theme = {
+                      name = lib.mkDefault osConfig.desktop.theme.name;
+                      accent = lib.mkDefault osConfig.desktop.theme.accent;
+                    };
+                    modifierKey = lib.mkDefault osConfig.desktop.modifierKey;
+                    wallpaper.directory = lib.mkDefault osConfig.desktop.wallpaper.directory;
+                    monitors = lib.mkDefault osConfig.desktop.monitors;
+                  };
+                }
+              )
+            ];
             extraSpecialArgs = commonArgs // {
               useNixGL = false;
               nixGLWrapper = lib.id;
