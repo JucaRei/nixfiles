@@ -109,7 +109,7 @@
     name = "alacritty";
     enabled =
       (config.system.programs.terminal.enable or false)
-      && (config.system.programs.terminal.default == "alacritty");
+      && ((config.system.programs.terminal.name or "") == "alacritty");
     configs = [ "$HOME/.config/alacritty" ];
     caches = [ ];
     data = [ ];
@@ -119,7 +119,7 @@
     name = "kitty";
     enabled =
       (config.system.programs.terminal.enable or false)
-      && (config.system.programs.terminal.default == "kitty");
+      && ((config.system.programs.terminal.name or "") == "kitty");
     configs = [ "$HOME/.config/kitty" ];
     caches = [ "$HOME/.cache/kitty" ];
     data = [ "$HOME/.local/share/kitty" ];
@@ -129,7 +129,7 @@
     name = "wezterm";
     enabled =
       (config.system.programs.terminal.enable or false)
-      && (config.system.programs.terminal.default == "wezterm");
+      && ((config.system.programs.terminal.name or "") == "wezterm");
     configs = [ "$HOME/.config/wezterm" ];
     caches = [ ];
     data = [ ];
@@ -139,7 +139,7 @@
     name = "ghostty";
     enabled =
       (config.system.programs.terminal.enable or false)
-      && (config.system.programs.terminal.default == "ghostty");
+      && ((config.system.programs.terminal.name or "") == "ghostty");
     configs = [ "$HOME/.config/ghostty" ];
     caches = [ ];
     data = [ ];
