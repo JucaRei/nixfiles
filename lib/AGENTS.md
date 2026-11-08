@@ -16,12 +16,11 @@ lib/
 
 ## helpers.nix e nixpkgs-config.nix
 
-- `nixpkgs-config.nix`: único ponto canônico definindo `allowUnfree = true;`, `allowBroken = true;` e `nvidia.acceptLicense = true;`. Sem `allowInsecure = true;` global; pacotes inseguros são permitidos exclusivamente via `permittedInsecurePackages` no host que deles necessita (ex.: `rocinante`).
+- `nixpkgs-config.nix`: único ponto canônico definindo `allowUnfree = true;` e `nvidia.acceptLicense = true;`. Sem `allowInsecure = true;` ou `allowBroken = true;` globais; pacotes inseguros são permitidos exclusivamente via `permittedInsecurePackages` no host que deles necessita (ex.: `rocinante`).
 
 - `mkCommonArgs`: único lugar que define os `specialArgs` (antes repetidos 5 vezes).
 - `mkPkgs`: `pkgs` do HM standalone (overlays nixgl, nur e `outputs.overlays`; `nixpkgs.*` do módulo HM não vale nesse caso).
 - `pinNixGLDefault`: com `nixGLType` explícito, fixa `nixgl.auto.nixGLDefault` em Intel/Mesa. Ainda é necessário porque `desktop/environments/default.nix` usa `pkgs.nixgl.auto.nixGLDefault`. Se esse uso for trocado por um script `nixGL` próprio, o overlay pode ser removido.
-- `nvidiaLegacyHosts`: lista que gera `isNvidia` no HM integrado. Pendência: trocar por option de hardware via `osConfig`.
 - `mkHosts`: constrói todas as `homeConfigurations`, `nixosConfigurations` e imagens `iso-*` a partir de `hosts.nix`.
 - `mkChecks`: avalia cada `homeConfiguration` standalone e gera derivações herméticas para `checks.fmt` (`nixfmt --check`) e `checks.shellcheck` (todos os scripts `.sh` do repo).
 

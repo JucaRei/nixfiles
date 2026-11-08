@@ -21,10 +21,6 @@ let
     platform = "x86_64-linux";
   };
 
-  # Hosts com NVIDIA legacy (340). Vira o specialArg `isNvidia` dentro do HM integrado.
-  # TODO: trocar por option de hardware lida via osConfig (como o dwm.nix já faz).
-  nvidiaLegacyHosts = [ "rocinante" ];
-
   # Plataformas suportadas. Darwin fica de fora para acelerar `nix flake check`.
   systems = [
     "x86_64-linux"
@@ -132,7 +128,6 @@ let
         }
         // {
           inherit useNixGL nixGLType nixGLWrapper;
-          isNvidia = false;
         };
       modules = [ ../home-manager ];
     };
@@ -186,7 +181,6 @@ let
             extraSpecialArgs = commonArgs // {
               useNixGL = false;
               nixGLWrapper = lib.id;
-              isNvidia = builtins.elem hostname nvidiaLegacyHosts;
             };
           };
         }

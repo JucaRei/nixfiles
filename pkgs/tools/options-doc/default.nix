@@ -71,10 +71,7 @@ let
   escapePipes = s: lib.replaceStrings [ "|" "\n" "`" ] [ "\\|" " " "'" ] (builtins.toString s);
 
   formatValue =
-    v:
-    v.text or (
-      if v ? _type && v._type == "literalExpression" then v.text else builtins.toJSON v
-    );
+    v: v.text or (if v ? _type && v._type == "literalExpression" then v.text else builtins.toJSON v);
 
   renderRow =
     { fullName, opt }:

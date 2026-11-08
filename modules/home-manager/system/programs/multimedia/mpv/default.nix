@@ -4,7 +4,6 @@
   pkgs,
   desktop ? null,
   nixGLWrapper ? (x: x),
-  isNvidia ? false,
   osConfig ? null,
   ...
 }:
@@ -17,6 +16,7 @@ let
     ;
   cfg = config.system.programs.multimedia.mpv;
   isNixOS = osConfig != null;
+  isNvidiaLegacy = (osConfig.hardware.graphics.cards.gpu or null) == "nvidia-legacy";
   shouldInstall = cfg.installPackage && !cfg.useSystemPackage && !cfg.useSystemPackages;
 
   intelExec =
@@ -329,7 +329,7 @@ in
           "low-ram"
           "software"
         ]
-        (if isNvidia then "legacy-nvidia" else "auto")
+        (if isNvidiaLegacy then "legacy-nvidia" else "auto")
         ''
           Perfil de hardware para reprodução no MPV:
           - "auto": decodificação segura automática (vo=gpu, gpu-api=auto, hwdec=auto-safe)

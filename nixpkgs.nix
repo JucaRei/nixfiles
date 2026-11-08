@@ -1,5 +1,5 @@
-# A nixpkgs instance that is grabbed from the pinned nixpkgs commit in the lock file
-# Useful to avoid using channels when using legacy nix commands
+# Standalone nixpkgs loader for legacy nix-shell invocations.
+# Evaluates using the exact locked nixpkgs commit from flake.lock.
 let
   lock = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.nixpkgs.locked;
 in
