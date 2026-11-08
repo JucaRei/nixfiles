@@ -1,3 +1,7 @@
+# What it is: Unified wallpaper manager for X11 (feh) and Wayland (swaybg/hyprpaper/swww).
+# How to enable: Set `desktop.wallpaper.directory = "...";` in settings.nix.
+# Example: desktop.wallpaper.directory = "/home/juca/Pictures/Wallpapers";
+#
 # desktop.wallpaper — gerenciador e aplicador agnóstico de papéis de parede.
 #
 # Suporta X11 (BSPWM, DWM, i3 via feh) e Wayland (MangoWM, Hyprland, Sway via swaybg/hyprpaper/swww).

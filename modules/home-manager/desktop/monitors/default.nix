@@ -1,3 +1,6 @@
+# What it is: Declarative multi-monitor management for X11, Wayland, and window managers.
+# How to enable: Define `desktop.monitors = [ ... ];` in settings.nix.
+# Example: desktop.monitors = [ { name = "eDP-1"; width = 1920; height = 1080; refresh = 60; primary = true; } ];
 {
   config,
   lib,
@@ -136,7 +139,7 @@ in
 {
   options.desktop = {
     monitors =
-      lib.my.mkListOf
+      lib.my.mkListOfEx
         (lib.types.submodule {
           options = {
             name = lib.my.mkStr "" "Identificador da saída/monitor (ex: eDP-1, HDMI-A-1, DP-1, Virtual-1)";
@@ -174,7 +177,16 @@ in
           };
         })
         [ ]
-        "Lista declarativa de monitores e resoluções unificada para todos os ambientes de desktop e WMs";
+        "Lista declarativa de monitores e resoluções unificada para todos os ambientes de desktop e WMs"
+        [
+          {
+            name = "eDP-1";
+            width = 1920;
+            height = 1080;
+            refresh = 60;
+            primary = true;
+          }
+        ];
 
     monitorsFontRendering = {
       enable = lib.my.mkBool true "Otimizar nitidez de renderização de fontes (subpixel RGB + slight hinting + RGBA antialiasing)";

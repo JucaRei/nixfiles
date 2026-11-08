@@ -1,3 +1,7 @@
+# What it is: Unified semantic theme engine (palette, GTK, icons, cursor, and fonts).
+# How to enable: Set `desktop.theme.name = "..."; desktop.theme.accent = "...";` in settings.nix.
+# Example: desktop.theme = { name = "catppuccin-mocha"; accent = "blue"; };
+#
 # desktop.theme — tema agnóstico (paleta + GTK + ícones + cursor + fonte).
 #
 # Uso (em qualquer host, com qualquer desktop):
@@ -208,12 +212,14 @@ in
     enable = mkEnableOption "aplicação do tema (GTK, ícones, cursor, fonte) neste host";
 
     name =
-      lib.my.mkEnum paletteNames "catppuccin-mocha"
-        "Paleta. Uma por arquivo em desktop/theme/palettes/.";
+      lib.my.mkEnumEx paletteNames "catppuccin-mocha"
+        "Paleta. Uma por arquivo em desktop/theme/palettes/."
+        "catppuccin-mocha";
 
     accent =
-      lib.my.mkEnum accents "blue"
-        "Papel de cor usado como destaque (`colors.accent`) e, no Catppuccin, no tema GTK.";
+      lib.my.mkEnumEx accents "blue"
+        "Papel de cor usado como destaque (`colors.accent`) e, no Catppuccin, no tema GTK."
+        "blue";
 
     custom =
       lib.my.mkOpt
@@ -246,8 +252,12 @@ in
         "Paleta inline completa (sem arquivo). Quando definida, substitui a paleta de desktop.theme.name.";
 
     overrides =
-      lib.my.mkOpt (types.attrsOf types.str) { }
-        "Sobrescritas pontuais de papéis de cores (ex.: { bg = \"#1e1e2e\"; border = \"#ff0000\"; }). Aplicadas sobre a paleta ativa.";
+      lib.my.mkOptEx (types.attrsOf types.str) { }
+        "Sobrescritas pontuais de papéis de cores (ex.: { bg = \"#1e1e2e\"; border = \"#ff0000\"; }). Aplicadas sobre a paleta ativa."
+        {
+          bg = "#1e1e2e";
+          border = "#ff0000";
+        };
 
     exclude =
       lib.my.mkListOf types.str [ ]

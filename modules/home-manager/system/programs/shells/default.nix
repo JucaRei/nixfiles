@@ -1,3 +1,6 @@
+# What it is: Unified command-line shell environment (Bash, Fish, Zsh, aliases, and prompts).
+# How to enable: Set `system.programs.shells.enable = true;`.
+# Example: system.programs.shells = { enable = true; default = "fish"; };
 {
   config,
   lib,

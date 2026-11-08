@@ -1,4 +1,6 @@
-# Easy package installation by string name on NixOS system level.
+# What it is: Simple package installer for CLI and GUI applications on NixOS.
+# How to enable: Set `my.apps.cli = [ "..." ];` or `my.apps.gui = [ "..." ];` in settings.nix.
+# Example: my.apps.cli = [ "htop" "ripgrep" ]; my.apps.gui = [ "firefox" ];
 {
   config,
   lib,
@@ -15,8 +17,14 @@ let
 in
 {
   options.my.apps = {
-    cli = lib.my.mkListOf lib.types.str [ ] "Lista de programas CLI para instalar pelo nome.";
-    gui = lib.my.mkListOf lib.types.str [ ] "Lista de programas GUI para instalar pelo nome.";
+    cli = lib.my.mkListOfEx lib.types.str [ ] "Lista de programas CLI para instalar pelo nome." [
+      "htop"
+      "ripgrep"
+    ];
+    gui = lib.my.mkListOfEx lib.types.str [ ] "Lista de programas GUI para instalar pelo nome." [
+      "firefox"
+      "vlc"
+    ];
   };
 
   config = {

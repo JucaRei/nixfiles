@@ -1,4 +1,6 @@
-# Easy package installation by string name for CLI and GUI applications.
+# What it is: Simple package installer for CLI and GUI applications by name.
+# How to enable: Set `my.apps.cli = [ "..." ];` or `my.apps.gui = [ "..." ];` in settings.nix.
+# Example: my.apps.cli = [ "htop" "ripgrep" ]; my.apps.gui = [ "firefox" ];
 {
   config,
   lib,
@@ -20,10 +22,17 @@ let
 in
 {
   options.my.apps = {
-    cli = lib.my.mkListOf lib.types.str [ ] "Lista de programas CLI para instalar pelo nome.";
+    cli = lib.my.mkListOfEx lib.types.str [ ] "Lista de programas CLI para instalar pelo nome." [
+      "htop"
+      "ripgrep"
+    ];
     gui =
-      lib.my.mkListOf lib.types.str [ ]
-        "Lista de programas GUI para instalar pelo nome (com aceleração gráfica automática).";
+      lib.my.mkListOfEx lib.types.str [ ]
+        "Lista de programas GUI para instalar pelo nome (com aceleração gráfica automática)."
+        [
+          "firefox"
+          "vlc"
+        ];
   };
 
   config = {

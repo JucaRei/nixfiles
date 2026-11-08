@@ -1,3 +1,6 @@
+# What it is: Terminal emulators configuration (Alacritty, Kitty, Ghostty, WezTerm, URxvt).
+# How to enable: Set `system.programs.terminal.enable = true;`.
+# Example: system.programs.terminal = { enable = true; default = "kitty"; };
 {
   config,
   lib,

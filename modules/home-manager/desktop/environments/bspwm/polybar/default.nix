@@ -1,3 +1,6 @@
+# What it is: Polybar status bar configuration for BSPWM.
+# How to enable: Set `desktop.bspwm.polybar.enable = true;`.
+# Example: desktop.bspwm.polybar.enable = true;
 {
   config,
   lib,

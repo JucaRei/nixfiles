@@ -1,3 +1,6 @@
+# What it is: Hyprland dynamic tiling Wayland compositor with fluid animations.
+# How to enable: Set `desktop = "hyprland";` in hosts.nix or `desktop.hyprland.enable = true;`.
+# Example: desktop.hyprland.enable = true;
 {
   config,
   lib,

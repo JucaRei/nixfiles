@@ -1,3 +1,6 @@
+# What it is: Web browsers configuration (Firefox, Thorium, Brave, Chrome).
+# How to enable: Set `system.programs.browsers.enable = true;`.
+# Example: system.programs.browsers = { enable = true; default = "firefox"; };
 {
   config,
   lib,

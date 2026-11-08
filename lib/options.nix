@@ -37,6 +37,36 @@ rec {
     elemType: default: description:
     mkOpt (lib.types.listOf elemType) default description;
 
+  # Helper para opções com exemplo ilustrativo.
+  mkOptEx =
+    type: default: description: example:
+    assert lib.assertMsg (
+      description != null && description != ""
+    ) "mkOptEx: 'description' é obrigatória";
+    lib.mkOption {
+      inherit
+        type
+        default
+        description
+        example
+        ;
+    };
+
+  # Helper para opções do tipo string com exemplo.
+  mkStrEx =
+    default: description: example:
+    mkOptEx lib.types.str default description example;
+
+  # Helper para opções de enumeração com exemplo.
+  mkEnumEx =
+    values: default: description: example:
+    mkOptEx (lib.types.enum values) default description example;
+
+  # Helper para opções de lista com exemplo.
+  mkListOfEx =
+    elemType: default: description: example:
+    mkOptEx (lib.types.listOf elemType) default description example;
+
   # Helper para opções somente-leitura.
   mkReadOnly =
     type: default: description:

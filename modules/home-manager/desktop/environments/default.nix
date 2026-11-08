@@ -1,3 +1,6 @@
+# What it is: Core desktop configuration (modifier keys, input devices, and base environment).
+# How to enable: Configured per-host in settings.nix under `desktop`.
+# Example: desktop.modifierKey = "Super";
 {
   config,
   lib,
@@ -20,7 +23,7 @@ in
 
   options.desktop = {
     modifierKey =
-      lib.my.mkEnum
+      lib.my.mkEnumEx
         [
           "Super"
           "Alt"
@@ -40,7 +43,8 @@ in
         ''
           Tecla modificadora principal (Super Key / Mod Key) para os Window Managers (BSPWM, Hyprland, MangoWM, XFCE4).
           Valores aceitos: "Super" (ou Mod4/Cmd/Windows), "Alt" (ou Mod1/Option), "Ctrl" (ou Control).
-        '';
+        ''
+        "Super";
 
     touchpad = {
       enable = lib.my.mkBool true "Habilitar configuração declarativa de Touchpad.";

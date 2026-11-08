@@ -1,3 +1,6 @@
+# What it is: DWM tiling window manager (Titus edition with quickshell status).
+# How to enable: Set `desktop = "dwm";` in hosts.nix or `desktop.dwm.enable = true;`.
+# Example: desktop.dwm.enable = true;
 {
   config,
   lib,

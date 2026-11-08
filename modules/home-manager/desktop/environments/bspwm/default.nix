@@ -1,3 +1,6 @@
+# What it is: BSPWM tiling window manager environment with sxhkd and polybar.
+# How to enable: Set `desktop = "bspwm";` in hosts.nix or `desktop.bspwm.enable = true;`.
+# Example: desktop.bspwm.enable = true;
 {
   config,
   lib,

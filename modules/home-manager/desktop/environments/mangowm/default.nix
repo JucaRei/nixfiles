@@ -1,3 +1,6 @@
+# What it is: MangoWM Wayland compositor (dwl-based lightweight tiling window manager).
+# How to enable: Set `desktop = "mangowm";` in hosts.nix or `desktop.mangowm.enable = true;`.
+# Example: desktop.mangowm.enable = true;
 {
   config,
   lib,

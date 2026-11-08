@@ -1,3 +1,6 @@
+# What it is: Waybar status bar for Wayland environments (MangoWM, Hyprland, Sway).
+# How to enable: Set `desktop.wayland.enable = true;`.
+# Example: desktop.wayland.enable = true;
 {
   config,
   lib,
