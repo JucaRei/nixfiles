@@ -16,8 +16,6 @@ in
 
       theme = {
         enable = mkDefault true;
-        name = mkDefault "catppuccin-macchiato";
-        accent = mkDefault "red";
       };
 
       wallpaper = {
@@ -42,15 +40,15 @@ in
           encapsulation = {
             workspaces = {
               style = mkDefault "powerline";
-              accent = mkDefault "#ff5555";
+              accent = mkDefault config.desktop.theme.colors.accent;
             };
             stats = {
               style = mkDefault "shapes";
             };
             netspeed = {
               style = mkDefault "slant";
-              color = mkDefault "#29339B";
-              accent = mkDefault "#8be9fd";
+              color = mkDefault config.desktop.theme.colors.surface;
+              accent = mkDefault config.desktop.theme.colors.accent;
             };
           };
         };
