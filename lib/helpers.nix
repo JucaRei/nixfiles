@@ -264,7 +264,7 @@ let
       system:
       let
         pkgs = inputs.nixpkgs.legacyPackages.${system};
-        nixfmtPkg = pkgs.nixfmt or pkgs.nixfmt-rfc-style or pkgs.nixfmt-tree;
+        nixfmtPkg = pkgs.nixfmt;
 
         # drvPath sem contexto: força a avaliação mas não vira dependência de build.
         evalOnly =

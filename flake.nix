@@ -88,11 +88,13 @@
         system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
-          nixfmtPkg = pkgs.nixfmt or pkgs.nixfmt-rfc-style;
+          nixfmtPkg = pkgs.nixfmt;
         in
         pkgs.writeShellScriptBin "nixfmt-wrapper" ''
           if [ $# -eq 0 ]; then
             exec find . -name "*.nix" -not -path "*/.git/*" -exec ${pkgs.lib.getExe nixfmtPkg} {} +
+          elif [ "$1" = "--check" ]; then
+            exec find . -name "*.nix" -not -path "*/.git/*" -exec ${pkgs.lib.getExe nixfmtPkg} --check {} +
           else
             exec ${pkgs.lib.getExe nixfmtPkg} "$@"
           fi
