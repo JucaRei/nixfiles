@@ -290,6 +290,14 @@ let
                 find ${self} -name "*.sh" -not -path "*/.git/*" -exec shellcheck {} +
                 touch $out
               '';
+
+          settings = pkgs.runCommand "check-settings" { } ''
+            if grep -rnE "lib\.|let|mk" ${self}/home-manager/hosts/*/settings.nix ${self}/nixos/hosts/*/settings.nix; then
+              echo "Error: settings.nix must contain only simple values without lib., let or mk!" >&2
+              exit 1
+            fi
+            touch $out
+          '';
         };
       in
       # Todos os hosts atuais são x86_64; evita avaliar em aarch64.

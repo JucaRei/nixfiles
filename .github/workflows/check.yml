@@ -41,3 +41,11 @@ jobs:
             echo "::endgroup::"
           '
 
+      - name: Validate settings.nix simplicity
+        run: |
+          echo "Checking settings.nix files for forbidden keywords (lib., let, mk)..."
+          if grep -rnE "lib\.|let|mk" home-manager/hosts/*/settings.nix nixos/hosts/*/settings.nix; then
+            echo "Error: settings.nix must contain only simple values without lib., let or mk!" >&2
+            exit 1
+          fi
+
