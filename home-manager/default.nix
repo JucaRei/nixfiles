@@ -8,6 +8,8 @@
   hostname,
   isWorkstation ? false,
   isVM ? false,
+  desktop ? null,
+  nixGLType ? null,
   ...
 }:
 let
@@ -31,6 +33,41 @@ in
   ++ lib.optional (builtins.pathExists (./. + "/hosts/${hostname}")) ./hosts/${hostname};
 
   config = {
+    assertions = [
+      {
+        assertion = isNixOS || (builtins.hasAttr hostname (import ../hosts.nix).home);
+        message = "hosts.nix: A máquina '${hostname}' não está registrada sob 'home = { ... }'. Registre-a em hosts.nix ou use './scripts/nx new-host ${hostname}'.";
+      }
+      {
+        assertion =
+          desktop == null
+          || builtins.elem desktop [
+            "bspwm"
+            "dwm"
+            "mangowm"
+            "mango"
+            "hyprland"
+            "xfce4"
+            "gnome"
+            "mate"
+            "pantheon"
+            "sway"
+            "i3"
+          ];
+        message = "hosts.nix: Ambiente gráfico '${toString desktop}' não suportado para o host '${hostname}'. Ambientes válidos: bspwm, dwm, mangowm, hyprland, xfce4, gnome, mate, pantheon, sway, i3 (ou null). Edite 'desktop = \"...\"' em hosts.nix.";
+      }
+      {
+        assertion = builtins.elem nixGLType [
+          null
+          "auto"
+          "intel"
+          "mesa"
+          "nvidia"
+        ];
+        message = "hosts.nix: nixGLType '${toString nixGLType}' inválido para o host '${hostname}'. Valores aceitos: \"intel\", \"mesa\", \"nvidia\", \"auto\" (ou null). Corrija a definição em hosts.nix.";
+      }
+    ];
+
     home = {
       inherit stateVersion;
       inherit username;

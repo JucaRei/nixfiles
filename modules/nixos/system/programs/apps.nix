@@ -13,7 +13,9 @@ let
 
   # Resolve package attribute from nixpkgs with user-friendly error message
   resolvePkg =
-    name: pkgs.${name} or (throw "pacote '${name}' não encontrado; procure em search.nixos.org");
+    name:
+    pkgs.${name}
+      or (throw "O pacote '${name}' não foi encontrado no Nixpkgs. Procure o nome correto com: ./scripts/nx search ${name} (ou em search.nixos.org).");
 in
 {
   options.my.apps = {

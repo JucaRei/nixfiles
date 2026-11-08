@@ -16,7 +16,9 @@ let
   resolvePkg =
     isGui: name:
     let
-      pkg = pkgs.${name} or (throw "pacote '${name}' não encontrado; procure em search.nixos.org");
+      pkg =
+        pkgs.${name}
+          or (throw "O pacote '${name}' não foi encontrado no Nixpkgs. Procure o nome correto com: ./scripts/nx search ${name} (ou em search.nixos.org).");
     in
     if isGui then nixGLWrapper pkg else pkg;
 in

@@ -44,9 +44,22 @@ let
   ];
 
   loadPalettes = accent: import ./palettes { inherit lib pkgs accent; };
+  paletteMap = loadPalettes cfg.accent;
   paletteNames = lib.unique (builtins.attrNames (loadPalettes "blue") ++ [ "tokyonight" ]);
   resolvedName = if cfg.name == "tokyonight" then "tokyo-night" else cfg.name;
-  selectedPalette = (loadPalettes cfg.accent).${resolvedName};
+  hasTheme = cfg.custom != null || (builtins.hasAttr resolvedName paletteMap);
+  selectedPalette =
+    if hasTheme then
+      paletteMap.${resolvedName}
+    else
+      {
+        label = resolvedName;
+        variant = "dark";
+        colors = { };
+        gtk = null;
+        icons = null;
+        cursor = null;
+      };
 
   palette =
     if cfg.custom != null then
@@ -320,6 +333,10 @@ in
   config = mkMerge [
     {
       assertions = [
+        {
+          assertion = hasTheme;
+          message = "desktop.theme: O tema '${cfg.name}' não existe. Temas válidos disponíveis: ${lib.concatStringsSep ", " paletteNames}. Dica: execute './scripts/nx themes' para ver a lista.";
+        }
         {
           assertion = missingRoles == [ ];
           message = "desktop.theme: A paleta '${paletteName}' não define todos os papéis obrigatórios de cor. Papéis ausentes: ${lib.concatStringsSep ", " missingRoles}. Papéis obrigatórios: ${lib.concatStringsSep ", " requiredRoles}.";

@@ -57,9 +57,19 @@ cmd_apply() {
   if is_nixos; then
     target_label="NixOS (.#$host)"
     apply_cmd=(sudo nixos-rebuild switch --flake ".#$host")
+    if ! grep -qE "^\s*${host}\s*=" "$HOSTS_FILE"; then
+      echo "❌ Erro: O host '$host' não está registrado em hosts.nix sob nixos." >&2
+      echo "💡 Dica: Registre '$host' em hosts.nix ou crie uma nova máquina com: ./scripts/nx new-host $host" >&2
+      exit 1
+    fi
   else
     target_label="Home Manager (.#$user@$host)"
     apply_cmd=(home-manager switch --flake ".#$user@$host")
+    if ! grep -qE "^\s*${host}\s*=" "$HOSTS_FILE"; then
+      echo "❌ Erro: O host '$host' não está registrado em hosts.nix sob home." >&2
+      echo "💡 Dica: Registre '$host' em hosts.nix ou crie uma nova máquina com: ./scripts/nx new-host $host" >&2
+      exit 1
+    fi
   fi
 
   echo "==> 🖥️ Máquina detectada: $host"

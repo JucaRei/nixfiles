@@ -11,6 +11,7 @@
   username,
   isWorkstation,
   isVM ? false,
+  desktop ? null,
   ...
 }:
 let
@@ -48,6 +49,31 @@ in
   ];
 
   config = {
+    assertions = [
+      {
+        assertion = isISO || (builtins.hasAttr hostname (import ../hosts.nix).nixos);
+        message = "hosts.nix: A máquina '${hostname}' não está registrada sob 'nixos = { ... }'. Registre-a em hosts.nix ou use './scripts/nx new-host ${hostname}'.";
+      }
+      {
+        assertion =
+          desktop == null
+          || builtins.elem desktop [
+            "bspwm"
+            "dwm"
+            "mangowm"
+            "mango"
+            "hyprland"
+            "xfce4"
+            "gnome"
+            "mate"
+            "pantheon"
+            "sway"
+            "i3"
+          ];
+        message = "hosts.nix: Ambiente gráfico '${toString desktop}' não suportado para o host '${hostname}'. Ambientes válidos: bspwm, dwm, mangowm, hyprland, xfce4, gnome, mate, pantheon, sway, i3 (ou null). Edite 'desktop = \"...\"' em hosts.nix.";
+      }
+    ];
+
     # Suprimir warning do catppuccin/nix
     catppuccin = {
       enable = mkDefault true;
