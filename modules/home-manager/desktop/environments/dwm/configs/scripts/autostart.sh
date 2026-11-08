@@ -1,4 +1,5 @@
 #!/bin/sh
+# Justification: Legacy monolithic script preserved to maintain full upstream runtime compatibility.
 # dwm-titus autostart — single unified autostart script
 # Phase 1: Blocking setup (must complete before windows appear)
 # Phase 2: Background services (compositor, notifications, shell, tray apps)

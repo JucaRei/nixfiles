@@ -56,7 +56,7 @@ in
 
     boot = {
       # Kernel padrão: Linux Zen do unstable (otimizado para agilidade de desktop em CPUs dual-core) + Nouveau
-      kernelPackages = pkgs.unstable.linuxPackages_zen;
+      kernelPackages = lib.mkDefault pkgs.unstable.linuxPackages_zen;
 
       initrd = {
         systemd.enable = false; # Evita falhas de montagem do /sysroot em hardware legado Intel ICH8-M

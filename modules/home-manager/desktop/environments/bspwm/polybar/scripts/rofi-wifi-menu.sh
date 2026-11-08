@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Justification: Legacy monolithic script preserved to maintain full upstream runtime compatibility.
 # shellcheck disable=SC2001,SC2005,SC2012,SC2034,SC2059,SC2076,SC2126,SC2154,SC2155,SC2183,SC2207,SC1091,SC2221,SC2222
 
 notify_wifi() {

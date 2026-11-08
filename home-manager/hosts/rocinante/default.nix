@@ -105,7 +105,7 @@ in
     desktop.dwm = {
       bar = "quickshell"; # Quickshell como barra padrão (ou "dwm-status" se preferir a barra nativa do DWM)
       quickshell = {
-        qsgBackend = "opengl";
+        qsgBackend = lib.mkDefault "opengl";
         glIntegration = lib.mkDefault "auto"; # Padrão: Mesa Gallium DRI nativa (Nouveau)
       };
       keyboard.brightness = {
@@ -138,21 +138,6 @@ in
         htop
         btop
       ];
-    };
-
-    # Especialização do Home Manager para boot alternativo com driver proprietário NVIDIA 340 Legacy
-    specialisation = {
-      nvidia = {
-        configuration = {
-          desktop.dwm.quickshell = {
-            qsgBackend = lib.mkForce "software";
-            glIntegration = lib.mkForce "none";
-          };
-          home.sessionVariables = {
-            GPU_DRIVER_PROFILE = lib.mkForce "nvidia-legacy";
-          };
-        };
-      };
     };
   };
 }

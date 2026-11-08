@@ -16,6 +16,7 @@ in
     users.users.nixos.description = "NixOS";
 
     # All configurations for live media are below:
+    # Justification: Dynamically align live media stateVersion with current evaluated nixpkgs release
     system = mkIf isISO { stateVersion = mkForce lib.trivial.release; };
 
     environment = {

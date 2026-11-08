@@ -149,6 +149,7 @@ let
   subvolFs = lib.mapAttrs' (subvol: mountpoint: {
     name = mountpoint;
     value = {
+      # Justification: Override disko generated disk path with predictable filesystem label
       device = lib.mkForce "/dev/disk/by-label/${btrfsLabel}";
       fsType = "btrfs";
       options = fsBtrfsOpts ++ [ "subvol=${subvol}" ];
@@ -157,6 +158,7 @@ let
 
   efiFs = {
     "/boot/efi" = {
+      # Justification: Override disko generated EFI partition path with predictable filesystem label
       device = lib.mkForce "/dev/disk/by-label/${efiLabel}";
       fsType = "vfat";
       options = [

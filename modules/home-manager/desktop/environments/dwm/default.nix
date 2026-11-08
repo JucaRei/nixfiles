@@ -33,8 +33,9 @@
     };
 
     # Desativar geração de symlinks read-only do settings.ini pelo Home Manager
-    # para permitir que o motor de temas do dwm-titus (theme-apply.sh e QML) edite os arquivos
-    gtk.enable = lib.mkForce false;
+    # para permitir que o motor de temas do dwm-titus (theme-apply.sh e QML) edite os arquivos.
+    # Standard priority (100) safely overrides theme module's mkDefault true (priority 1000).
+    gtk.enable = false;
 
     home.packages = [
       config.desktop.theme.gtk.package

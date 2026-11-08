@@ -152,24 +152,6 @@ rec {
   };
   audioControlScript = lib.getExe audioControlScriptPkg;
 
-  rofiBluetoothMenuPkg = writeShellApp {
-    name = "rofi-bluetooth";
-    runtimeInputs = [
-      pkgs.blueman
-      pkgs.bluez
-      pkgs.dunst
-      pkgs.gawk
-      pkgs.gnugrep
-      pkgs.gnused
-      pkgs.procps
-      pkgs.rofi
-      pkgs.util-linux
-      pkgs.uutils-coreutils-noprefix
-    ];
-    text = builtins.readFile ./scripts/rofi-bluetooth.sh;
-  };
-  rofiBluetoothMenu = lib.getExe rofiBluetoothMenuPkg;
-
   networkScriptPkg = writeShellApp {
     name = "polybar-network";
     runtimeInputs = [
@@ -184,35 +166,6 @@ rec {
   };
   networkScript = lib.getExe networkScriptPkg;
 
-  rofiWifiMenuPkg = writeShellApp {
-    name = "rofi-wifi-menu";
-    runtimeInputs = [
-      pkgs.dunst
-      pkgs.gawk
-      pkgs.gnugrep
-      pkgs.gnused
-      pkgs.networkmanager
-      pkgs.networkmanagerapplet
-      pkgs.procps
-      pkgs.rofi
-      pkgs.uutils-coreutils-noprefix
-    ];
-    text = builtins.readFile ./scripts/rofi-wifi-menu.sh;
-  };
-  rofiWifiMenu = lib.getExe rofiWifiMenuPkg;
-
-  rofiPowerMenuPkg = writeShellApp {
-    name = "rofi-powermenu";
-    runtimeInputs = [
-      pkgs.bspwm
-      pkgs.rofi
-      pkgs.systemd
-      pkgs.uutils-coreutils-noprefix
-    ];
-    text = builtins.readFile ./scripts/rofi-powermenu.sh;
-  };
-  rofiPowerMenu = lib.getExe rofiPowerMenuPkg;
-
   minimizedScriptPkg = writeShellApp {
     name = "polybar-minimized";
     runtimeInputs = [
@@ -225,18 +178,6 @@ rec {
   };
   minimizedScript = lib.getExe minimizedScriptPkg;
 
-  restoreMenuScriptPkg = writeShellApp {
-    name = "rofi-restore-minimized";
-    runtimeInputs = [
-      pkgs.bspwm
-      pkgs.rofi
-      pkgs.uutils-coreutils-noprefix
-      pkgs.xdotool
-    ];
-    text = builtins.readFile ./scripts/rofi-restore-minimized.sh;
-  };
-  restoreMenuScript = lib.getExe restoreMenuScriptPkg;
-
   temperatureScriptPkg = writeShellApp {
     name = "polybar-temperature";
     runtimeInputs = [
@@ -248,19 +189,6 @@ rec {
     text = builtins.readFile ./scripts/polybar-temperature.sh;
   };
   temperatureScript = lib.getExe temperatureScriptPkg;
-
-  rofiKeyboardMenuPkg = writeShellApp {
-    name = "rofi-keyboard";
-    runtimeInputs = [
-      pkgs.coreutils
-      pkgs.dunst
-      pkgs.gnused
-      pkgs.rofi
-      pkgs.xkb-switch
-    ];
-    text = builtins.readFile ./scripts/rofi-keyboard.sh;
-  };
-  rofiKeyboardMenu = lib.getExe rofiKeyboardMenuPkg;
 
   redshiftScriptPkg = writeShellApp {
     name = "polybar-redshift";
@@ -301,21 +229,6 @@ rec {
     text = builtins.readFile ./scripts/bsp-layout-switch.sh;
   };
   bspLayoutSwitchScript = lib.getExe bspLayoutSwitchScriptPkg;
-
-  rofiLayoutMenuPkg = writeShellApp {
-    name = "rofi-bsp-layout";
-    runtimeInputs = [
-      bspLayoutSwitchScriptPkg
-      pkgs.bsp-layout
-      pkgs.bspwm
-      pkgs.coreutils
-      pkgs.dunst
-      pkgs.jq
-      pkgs.rofi
-    ];
-    text = builtins.readFile ./scripts/rofi-bsp-layout.sh;
-  };
-  rofiLayoutMenu = lib.getExe rofiLayoutMenuPkg;
 
   osLogoScriptPkg = writeShellApp {
     name = "polybar-os-logo";
@@ -418,21 +331,30 @@ rec {
   };
   notificationToggleDndScript = lib.getExe notificationToggleDndScriptPkg;
 
-  rofiNotificationMenuPkg = writeShellApp {
-    name = "rofi-notifications";
-    runtimeInputs = [
-      pkgs.coreutils
-      pkgs.dunst
-      pkgs.gawk
-      pkgs.gnugrep
-      pkgs.gnused
-      pkgs.jq
-      pkgs.procps
-      pkgs.rofi
-      pkgs.systemd
-    ];
-    text = builtins.readFile ./scripts/rofi-notifications.sh;
+  # Rofi interactive menus and pickers
+  rofiMenus = import ./_rofi-menus.nix {
+    inherit
+      pkgs
+      lib
+      writeShellApp
+      bspLayoutSwitchScriptPkg
+      ;
   };
-  rofiNotificationMenu = lib.getExe rofiNotificationMenuPkg;
 
+  inherit (rofiMenus)
+    rofiBluetoothMenuPkg
+    rofiBluetoothMenu
+    rofiWifiMenuPkg
+    rofiWifiMenu
+    rofiPowerMenuPkg
+    rofiPowerMenu
+    restoreMenuScriptPkg
+    restoreMenuScript
+    rofiKeyboardMenuPkg
+    rofiKeyboardMenu
+    rofiLayoutMenuPkg
+    rofiLayoutMenu
+    rofiNotificationMenuPkg
+    rofiNotificationMenu
+    ;
 }

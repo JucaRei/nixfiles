@@ -86,7 +86,7 @@ in
       ];
 
       # Disable Plymouth — hangs at "terminate Plymouth Boot Screen" on 8600M GT + nouveau
-      plymouth.enable = mkForce false;
+      plymouth.enable = false;
 
       # Blacklist open-source Broadcom drivers that conflict with broadcom_sta (wl)
       blacklistedKernelModules = [
@@ -114,7 +114,7 @@ in
     };
 
     # Disable VM guest drivers (they produce hv_vmbus errors on bare metal)
-    virtualisation.hypervGuest.enable = mkForce false;
+    virtualisation.hypervGuest.enable = false;
 
     # Enable all firmware for broadest Wi-Fi/Bluetooth/GPU compatibility
     hardware = {
@@ -138,6 +138,7 @@ in
           powersave = false;
         };
       };
+      # Justification: Force-disable wpa_supplicant so NetworkManager exclusively manages wireless on live ISO.
       wireless.enable = mkForce false;
     };
 

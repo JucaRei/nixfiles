@@ -1,17 +1,19 @@
-# modules/home-manager/desktop/environments/bspwm/_sxhkd-scripts.nix
-# Derivações herméticas e wrappers de scripts utilitários do SXHKD.
+# Helper script derivations for BSPWM SXHKD keybindings.
 {
   pkgs,
   lib,
-  nixGLWrapper ? lib.id,
-  scratchpadLaunchCmd,
-  fmCmd,
-  picomBin,
+  config,
+  cfg,
+  mod,
+  modDisplayName,
   screenshotSavePath,
-  browserLaunchCmd,
+  fmCmd,
   termCmd,
   termDisplayName,
-  modDisplayName,
+  scratchpadLaunchCmd,
+  browserLaunchCmd,
+  picomBin,
+  nixGLWrapper ? lib.id,
 }:
 let
   writeShellApp =
@@ -101,6 +103,59 @@ let
     text = builtins.readFile ./scripts/bspwm-screenshot.sh;
   };
   screenshotScript = lib.getExe screenshotScriptPkg;
+
+  isAppleKeyboard =
+    (config.home.keyboard.model or "") == "apple" || (config.home.keyboard.model or "") == "macbook";
+
+  effectiveScreenshotProfile =
+    if cfg.screenshotProfile != "auto" then
+      cfg.screenshotProfile
+    else if isAppleKeyboard then
+      "mac"
+    else
+      "standard";
+
+  screenshotBindings =
+    if effectiveScreenshotProfile == "none" then
+      { }
+    else if effectiveScreenshotProfile == "custom" then
+      cfg.screenshotKeybindings
+    else if effectiveScreenshotProfile == "mac" then
+      {
+        # --- Perfil macOS (MacBook Pro / Air e teclados Apple sem tecla Print física) ---
+        "${mod} + shift + 3" = "${screenshotScript} full";
+        "${mod} + shift + 4" = "${screenshotScript} area";
+        "${mod} + shift + 5" = "${screenshotScript} menu";
+        "${mod} + shift + 6" = "${screenshotScript} gif";
+        "Print" = "${screenshotScript} full";
+        "shift + Print" = "${screenshotScript} area";
+        "ctrl + Print" = "${screenshotScript} window";
+        "ctrl + shift + Print" = "${screenshotScript} gif";
+        "super + shift + s" = "${screenshotScript} menu";
+        "${mod} + ctrl + shift + s" = "${screenshotScript} gif";
+        "XF86SelectiveScreenshot" = "${screenshotScript} area";
+      }
+      // lib.optionalAttrs (mod != "super") {
+        "${mod} + shift + s" = "${screenshotScript} area";
+      }
+    else
+      {
+        # --- Perfil Standard / PC (Acer Nitro, PCs desktop, VMs, etc.) ---
+        "Print" = "${screenshotScript} full";
+        "shift + Print" = "${screenshotScript} area";
+        "ctrl + Print" = "${screenshotScript} window";
+        "ctrl + shift + Print" = "${screenshotScript} gif";
+        "${mod} + shift + Print" = "${screenshotScript} in5";
+        "${mod} + Print" = "${screenshotScript} menu";
+        "Sys_Req" = "${screenshotScript} full";
+        "shift + Sys_Req" = "${screenshotScript} area";
+        "super + shift + s" = "${screenshotScript} menu";
+        "${mod} + ctrl + shift + s" = "${screenshotScript} gif";
+        "XF86SelectiveScreenshot" = "${screenshotScript} area";
+      }
+      // lib.optionalAttrs (mod != "super") {
+        "${mod} + shift + s" = "${screenshotScript} area";
+      };
 
   volumeOsdPkg = writeShellApp {
     name = "volume-osd";
@@ -229,31 +284,33 @@ let
     text = builtins.readFile ./scripts/bspwm-toggle-desktop.sh;
   };
   toggleDesktopScript = lib.getExe toggleDesktopScriptPkg;
+
 in
 {
   inherit
-    scratchpadScriptPkg
-    scratchpadScript
-    resizeScriptPkg
-    resizeScript
+    pseudoTileScriptPkg
+    pseudoTileScript
     screenshotScriptPkg
     screenshotScript
+    screenshotBindings
+    resizeScriptPkg
+    resizeScript
+    colorPickerScriptPkg
+    colorPickerScript
+    scratchpadScriptPkg
+    scratchpadScript
+    desktopFocusScriptPkg
+    desktopFocusScript
+    mediaControlPkg
+    mediaControl
     volumeOsdPkg
     volumeOsd
     brightnessOsdPkg
     brightnessOsd
-    mediaControlPkg
-    mediaControl
-    colorPickerScriptPkg
-    colorPickerScript
     kbdBrightnessOsdPkg
     kbdBrightnessOsd
-    pseudoTileScriptPkg
-    pseudoTileScript
     quickSettingsPkg
     quickSettings
-    desktopFocusScriptPkg
-    desktopFocusScript
     desktopNodeScriptPkg
     desktopNodeScript
     desktopRightClickScriptPkg

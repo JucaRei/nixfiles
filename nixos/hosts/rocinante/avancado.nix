@@ -163,7 +163,8 @@ in
         configuration = {
           system.nixos.tags = [ "nvidia-kernel-6.6" ];
           boot = {
-            kernelPackages = mkForce pkgs.linuxPackages_6_6;
+            kernelPackages = pkgs.linuxPackages_6_6;
+            # Justification: Completely replace base kernel params list for legacy NVIDIA 340 driver boot.
             kernelParams = mkForce [
               "zswap.enabled=0"
               "mitigations=off"
@@ -177,15 +178,15 @@ in
               "nomodeset"
             ];
           };
-          hardware.graphics.cards.gpu = mkForce "nvidia-legacy";
+          hardware.graphics.cards.gpu = "nvidia-legacy";
 
           home-manager.users.juca = {
             desktop.dwm.quickshell = {
-              qsgBackend = mkForce "software";
-              glIntegration = mkForce "none";
+              qsgBackend = "software";
+              glIntegration = "none";
             };
             home.sessionVariables = {
-              GPU_DRIVER_PROFILE = mkForce "nvidia-legacy";
+              GPU_DRIVER_PROFILE = "nvidia-legacy";
             };
           };
         };

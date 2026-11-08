@@ -51,6 +51,7 @@ in
         enable = true;
       };
       xserver = {
+        # Justification: Clear default videoDrivers so legacy 340 driver is loaded exclusively via drivers section
         videoDrivers = mkForce [ ];
         drivers = [
           {

@@ -38,6 +38,7 @@ in
     };
 
     services.pipewire = {
+      # Justification: Force-disable Pipewire when PulseAudio backend is explicitly enabled
       enable = mkForce false;
       audio.enable = false;
     };

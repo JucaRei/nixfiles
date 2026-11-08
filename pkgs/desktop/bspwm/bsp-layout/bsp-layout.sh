@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Justification: Legacy monolithic script preserved to maintain full upstream runtime compatibility.
 
 # ==============================================================================
 # bsp-layout - Gerenciador Dinâmico e Reativo de Layouts para BSPWM (estilo DWL e Niri)

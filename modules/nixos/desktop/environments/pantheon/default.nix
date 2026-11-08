@@ -57,7 +57,8 @@
 
     services = {
       gnome = {
-        evolution-data-server.enable = lib.mkForce false; # isInstall;
+        # Justification: Disable evolution-data-server in Pantheon to prevent background resource hogging
+        evolution-data-server.enable = lib.mkForce false;
         gnome-online-accounts.enable = isInstall;
         gnome-keyring.enable = true;
       };

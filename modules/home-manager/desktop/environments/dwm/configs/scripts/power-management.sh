@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Justification: Legacy monolithic script preserved to maintain full upstream runtime compatibility.
 # =============================================================================
 # power-management.sh — Laptop Power Management Overview & Tuning
 # =============================================================================

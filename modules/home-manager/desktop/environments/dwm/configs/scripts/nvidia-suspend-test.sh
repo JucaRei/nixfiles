@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Justification: Legacy monolithic script preserved to maintain full upstream runtime compatibility.
 # nvidia-suspend-test.sh — Comprehensive NVIDIA suspend/resume readiness checker
 # Tests all factors required for reliable suspend/resume with NVIDIA GPUs on Linux.
 set -euo pipefail

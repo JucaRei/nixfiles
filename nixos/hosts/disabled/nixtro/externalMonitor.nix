@@ -7,14 +7,14 @@
 {
   services =
     let
-      inherit (lib) mkIf mkForce;
+      inherit (lib) mkIf;
       isXorg =
         if ("${pkgs.uutils-coreutils-noprefix}/bin/echo $XDG_SESSION_TYPE" == "x11") then true else false;
     in
     {
       xserver = mkIf (config.features.graphics.backend != "wayland") {
-        # FUCK NVIDIA
-        config = mkForce ''
+        # Legacy X11 configuration for external monitor layout
+        config = ''
           Section "ServerLayout"
             Identifier "layout"
             Screen "nvidia" 0 0

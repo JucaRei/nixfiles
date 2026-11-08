@@ -1,4 +1,5 @@
 #!/bin/bash
+# Justification: Legacy monolithic script preserved to maintain full upstream runtime compatibility.
 # theme-apply.sh — Apply the active theme from themes.toml to all apps.
 #
 # Called automatically by DWM on config reload (SIGUSR1 / file save).

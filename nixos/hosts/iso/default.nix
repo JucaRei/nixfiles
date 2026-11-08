@@ -68,12 +68,13 @@ in
     };
 
     # Disable Hyper-V guest drivers on generic bare metal ISOs to eliminate hv_vmbus probe errors
-    virtualisation.hypervGuest.enable = mkForce false;
+    virtualisation.hypervGuest.enable = false;
 
     # --- Network Management ---
     networking = {
       networkmanager.enable = true;
-      wireless.enable = mkForce false; # Avoid wpa_supplicant conflict with NetworkManager
+      # Justification: Force-disable wpa_supplicant so NetworkManager exclusively manages wireless on live ISO.
+      wireless.enable = mkForce false;
     };
 
     # --- Memory & ZRAM (2x Host RAM) ---
