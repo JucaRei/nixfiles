@@ -1,10 +1,10 @@
 {
   lib,
   colors,
-  themeContext,
+  pillsContext,
 }:
 let
-  inherit (themeContext)
+  inherit (pillsContext)
     isPills
     hasTray
     wsColor
