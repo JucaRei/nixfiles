@@ -9,6 +9,16 @@ Configuração declarativa e modular para **NixOS** e **Home Manager** (standalo
 
 ## ⚡ Comandos Rápidos
 
+### Utilitário `nx` (Recomendado para o dia a dia)
+```bash
+./scripts/nx apply             # Aplica alterações no computador atual (com confirmação)
+./scripts/nx check             # Valida o repositório dentro dos limites de segurança
+./scripts/nx rollback          # Desfaz a última alteração (volta à versão anterior)
+./scripts/nx list-generations  # Lista versões anteriores disponíveis
+./scripts/nx new-host <nome>   # Cria uma nova máquina a partir do modelo
+./scripts/nx themes            # Lista as paletas de cores disponíveis
+```
+
 ### Home Manager (Standalone em distros tradicionais como Fedora e Debian)
 ```bash
 home-manager switch --flake .#juca@fedora

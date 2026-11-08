@@ -5,6 +5,7 @@
 let
   nixCapped = pkgs.callPackage ./pkgs/tools/nix-capped { };
   nixCheckCapped = pkgs.callPackage ./pkgs/tools/nix-check-capped { nix-capped = nixCapped; };
+  nx = pkgs.callPackage ./pkgs/tools/nx { };
   shell = pkgs.mkShell {
     name = "Flakes SHELL";
     # Enable experimental features without having to specify the argument
@@ -23,6 +24,7 @@ let
       duf
       # dropbear # ssh server
       nix-output-monitor # better output from builds
+      nx
       nixCapped
       nixCheckCapped
       # micro

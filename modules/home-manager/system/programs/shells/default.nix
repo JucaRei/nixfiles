@@ -127,6 +127,7 @@ in
       home = {
         packages = [
           pkgs.comma
+          pkgs.nx
           pkgs.nix-capped
           pkgs.nix-check-capped
         ]

@@ -1,0 +1,286 @@
+#!/usr/bin/env bash
+# nx — Friendly command-line tool to manage nixfiles.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+HOSTS_FILE="$REPO_DIR/hosts.nix"
+PALETTES_DIR="$REPO_DIR/modules/home-manager/desktop/theme/palettes"
+
+show_help() {
+  cat << 'EOF'
+❄️ nx — Gerenciador simplificado do Nixfiles
+
+Uso:
+  nx <comando> [argumentos...]
+
+Comandos disponíveis:
+  apply             Aplica as alterações na máquina atual (pede confirmação)
+  check             Valida a integridade do repositório (com limites de segurança)
+  rollback          Volta para a versão/geração anterior do sistema
+  list-generations  Lista as versões/gerações salvas no sistema
+  new-host <nome>   Cria uma nova máquina a partir do modelo e a registra em hosts.nix
+  themes            Lista todas as paletas de cores e temas disponíveis
+  update            Atualiza as dependências do repositório (flake.lock)
+  search <pacote>   Pesquisa pacotes disponíveis no Nixpkgs
+  help              Exibe esta ajuda
+
+EOF
+}
+
+detect_hostname() {
+  local hostname
+  hostname="$(hostname -s 2>/dev/null || cat /etc/hostname 2>/dev/null || echo "")"
+  echo "$hostname"
+}
+
+is_nixos() {
+  [ -e /etc/NIXOS ]
+}
+
+cmd_apply() {
+  local host
+  host="$(detect_hostname)"
+
+  if [ -z "$host" ]; then
+    echo "❌ Erro: Não foi possível detectar o nome da máquina (hostname)." >&2
+    echo "💡 Dica: Verifique se /etc/hostname contém o nome configurado em hosts.nix." >&2
+    exit 1
+  fi
+
+  cd "$REPO_DIR"
+
+  local target_label
+  local apply_cmd
+  local user="${USER:-juca}"
+
+  if is_nixos; then
+    target_label="NixOS (.#$host)"
+    apply_cmd=(sudo nixos-rebuild switch --flake ".#$host")
+  else
+    target_label="Home Manager (.#$user@$host)"
+    apply_cmd=(home-manager switch --flake ".#$user@$host")
+  fi
+
+  echo "==> 🖥️ Máquina detectada: $host"
+  echo "==> 🎯 Alvo da aplicação: $target_label"
+  echo ""
+
+  local assume_yes=false
+  for arg in "$@"; do
+    if [ "$arg" = "-y" ] || [ "$arg" = "--yes" ]; then
+      assume_yes=true
+      break
+    fi
+  done
+
+  if [ "$assume_yes" = false ]; then
+    read -r -p "Deseja compilar e aplicar as configurações agora? [s/N] " confirm
+    case "$confirm" in
+      [sS]|[yY]|[sS][iI][mM])
+        ;;
+      *)
+        echo "Operação cancelada pelo usuário."
+        exit 0
+        ;;
+    esac
+  fi
+
+  echo "==> 🚀 Executando: ${apply_cmd[*]}"
+  "${apply_cmd[@]}"
+}
+
+cmd_check() {
+  cd "$REPO_DIR"
+  echo "==> 🔍 Executando verificação de integridade com limite de recursos..."
+  if command -v nix-check-capped >/dev/null 2>&1; then
+    nix-check-capped "$@"
+  elif [ -x "$REPO_DIR/scripts/nix-check-capped" ]; then
+    "$REPO_DIR/scripts/nix-check-capped" "$@"
+  else
+    nix-capped nix flake check --no-build "$@"
+  fi
+}
+
+cmd_update() {
+  cd "$REPO_DIR"
+  echo "==> 🔄 Atualizando dependências no flake.lock..."
+  nix flake update "$@"
+}
+
+cmd_rollback() {
+  if is_nixos; then
+    echo "==> ⏪ Revertendo NixOS para a geração anterior..."
+    sudo nixos-rebuild --rollback switch
+  else
+    echo "==> ⏪ Revertendo Home Manager para a geração anterior..."
+    home-manager switch --rollback
+  fi
+}
+
+cmd_list_generations() {
+  if is_nixos; then
+    echo "==> 📜 Lista de gerações do sistema NixOS:"
+    sudo nixos-rebuild list-generations
+  else
+    echo "==> 📜 Lista de gerações do Home Manager:"
+    home-manager generations
+  fi
+}
+
+cmd_new_host() {
+  local new_name="${1:-}"
+  if [ -z "$new_name" ]; then
+    echo "❌ Erro: Nome do host não informado." >&2
+    echo "Uso: nx new-host <nome-da-maquina>" >&2
+    exit 1
+  fi
+
+  if [[ ! "$new_name" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    echo "❌ Erro: O nome da máquina deve conter apenas letras, números ou hífens." >&2
+    exit 1
+  fi
+
+  local hm_dir="$REPO_DIR/home-manager/hosts/$new_name"
+  local nixos_dir="$REPO_DIR/nixos/hosts/$new_name"
+
+  if [ -d "$hm_dir" ] || [ -d "$nixos_dir" ]; then
+    echo "❌ Erro: Já existe uma máquina configurada com o nome '$new_name'." >&2
+    exit 1
+  fi
+
+  echo "✨ Configurando nova máquina: $new_name"
+  echo ""
+
+  # Pergunta 1: Tipo de sistema
+  echo "1. Qual o tipo de instalação para '$new_name'?"
+  echo "   [1] Home Manager standalone (Ubuntu, Debian, Fedora, Arch) [padrão]"
+  echo "   [2] NixOS completo"
+  local answer_type=""
+  read -r -p "Escolha [1 ou 2, padrão: 1]: " answer_type || true
+  local type_choice="${answer_type:-1}"
+
+  # Pergunta 2: Ambiente gráfico
+  echo ""
+  echo "2. Qual ambiente gráfico deseja usar?"
+  echo "   [1] bspwm (leve, X11) [padrão]"
+  echo "   [2] dwm (ultraleve em C, X11)"
+  echo "   [3] mangowm (Wayland moderno)"
+  local answer_desktop=""
+  read -r -p "Escolha [1, 2 ou 3, padrão: 1]: " answer_desktop || true
+  local desktop_choice="${answer_desktop:-1}"
+
+  local chosen_desktop="bspwm"
+  case "$desktop_choice" in
+    2|dwm) chosen_desktop="dwm" ;;
+    3|mangowm) chosen_desktop="mangowm" ;;
+    *) chosen_desktop="bspwm" ;;
+  esac
+
+  # Pergunta 3: Tema de cores
+  echo ""
+  echo "3. Qual tema de cores deseja usar inicialmente?"
+  echo "   (Exemplos: catppuccin-mocha, dracula, nord, tokyo-night, gruvbox-dark)"
+  local answer_theme=""
+  read -r -p "Tema [padrão: catppuccin-mocha]: " answer_theme || true
+  local theme_choice="${answer_theme:-catppuccin-mocha}"
+
+  local target_dir
+  local is_hm=true
+
+  if [ "$type_choice" = "2" ] || [ "$type_choice" = "nixos" ]; then
+    is_hm=false
+    target_dir="$nixos_dir"
+  else
+    target_dir="$hm_dir"
+  fi
+
+  echo ""
+  echo "==> 📁 Criando arquivos a partir de templates/host em $target_dir..."
+  mkdir -p "$target_dir"
+  cp "$REPO_DIR/templates/host/settings.nix" "$target_dir/settings.nix"
+  cp "$REPO_DIR/templates/host/default.nix" "$target_dir/default.nix"
+
+  if [ "$theme_choice" != "catppuccin-mocha" ]; then
+    sed -i "s/theme.name = \"catppuccin-mocha\";/theme.name = \"$theme_choice\";/" "$target_dir/settings.nix"
+  fi
+
+  echo "==> 📝 Registrando '$new_name' em hosts.nix..."
+  if [ "$is_hm" = true ]; then
+    sed -i "/home = {/a \\    $new_name = {\\n      desktop = \"$chosen_desktop\";\\n    };" "$HOSTS_FILE"
+  else
+    sed -i "/nixos = {/a \\    $new_name = {\\n      desktop = \"$chosen_desktop\";\\n      stateVersion = \"24.11\";\\n    };" "$HOSTS_FILE"
+  fi
+
+  echo ""
+  echo "✅ Máquina '$new_name' criada com sucesso!"
+  echo "👉 Arquivo simples de configurações: $target_dir/settings.nix"
+  echo "👉 Registro geral: hosts.nix"
+  echo "👉 Para testar sem aplicar: nx check"
+  echo "👉 Para aplicar nesta máquina: nx apply"
+}
+
+cmd_themes() {
+  echo "🎨 Paletas de cores disponíveis em nixfiles:"
+  echo ""
+  if [ -d "$PALETTES_DIR" ]; then
+    for f in "$PALETTES_DIR"/*.nix; do
+      local base
+      base="$(basename "$f" .nix)"
+      if [ "$base" != "default" ] && [ "${base:0:1}" != "_" ]; then
+        echo "  • $base"
+      fi
+    done
+  fi
+  echo ""
+  echo "💡 Para usar uma paleta, edite a linha 'theme.name = \"<nome>\";' no arquivo settings.nix da sua máquina."
+}
+
+cmd_search() {
+  local query="${1:-}"
+  if [ -z "$query" ]; then
+    echo "❌ Erro: Informe o termo de busca." >&2
+    echo "Uso: nx search <nome-do-pacote>" >&2
+    exit 1
+  fi
+  echo "==> 🔍 Buscando por '$query' no Nixpkgs..."
+  nix search nixpkgs "$query"
+}
+
+ACTION="${1:-help}"
+shift || true
+
+case "$ACTION" in
+  apply)
+    cmd_apply "$@"
+    ;;
+  check)
+    cmd_check "$@"
+    ;;
+  update)
+    cmd_update "$@"
+    ;;
+  rollback)
+    cmd_rollback "$@"
+    ;;
+  list-generations)
+    cmd_list_generations "$@"
+    ;;
+  new-host)
+    cmd_new_host "$@"
+    ;;
+  themes)
+    cmd_themes "$@"
+    ;;
+  search)
+    cmd_search "$@"
+    ;;
+  help|--help|-h)
+    show_help
+    ;;
+  *)
+    echo "❌ Comando desconhecido: '$ACTION'" >&2
+    echo "Execute 'nx help' para ver a lista de comandos disponíveis." >&2
+    exit 1
+    ;;
+esac
