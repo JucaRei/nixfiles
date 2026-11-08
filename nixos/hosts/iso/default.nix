@@ -67,8 +67,8 @@ in
       ];
     };
 
-    # Disable Hyper-V guest drivers on generic bare metal ISOs to eliminate hv_vmbus probe errors
-    virtualisation.hypervGuest.enable = false;
+    # Justification: Override upstream installation-cd-graphical-base.nix hardcoded true to avoid hv_vmbus probe errors on bare metal ISOs
+    virtualisation.hypervGuest.enable = mkForce false;
 
     # --- Network Management ---
     networking = {

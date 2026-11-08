@@ -113,8 +113,8 @@ in
       ];
     };
 
-    # Disable VM guest drivers (they produce hv_vmbus errors on bare metal)
-    virtualisation.hypervGuest.enable = false;
+    # Justification: Override upstream installation-cd-graphical-base.nix hardcoded true to avoid hv_vmbus probe errors on bare metal ISOs
+    virtualisation.hypervGuest.enable = mkForce false;
 
     # Enable all firmware for broadest Wi-Fi/Bluetooth/GPU compatibility
     hardware = {
