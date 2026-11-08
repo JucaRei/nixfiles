@@ -8,13 +8,17 @@ Bem-vindo à Wiki do repositório `nixfiles`. Este documento serve como um guia 
 
 ```
 .
-├── flake.nix               # Ponto de entrada principal com as máquinas e inputs
+├── flake.nix               # Ponto de entrada com inputs e saídas do flake
+├── hosts.nix               # Registro declarativo de todos os hosts (HM, NixOS, ISOs)
 ├── flake.lock              # Travamento de versões exatas de cada dependência
 ├── shell.nix               # Shell de desenvolvimento (`nix develop`)
+├── profiles/               # Perfis compartilhados (home/ e nixos/)
 ├── lib/
 │   ├── default.nix         # Ponto de entrada das funções utilitárias
-│   ├── helpers.nix         # Construtores mkNixos e mkHome
-│   └── nixGL.nix           # Wrapper OpenGL para distros não-NixOS
+│   ├── helpers.nix         # Construtores mkHosts, mkNixos, mkHome e mkChecks
+│   ├── import-dir.nix      # Auto-descoberta e importação declarativa de módulos
+│   ├── options.nix         # Helpers declarativos de opções (lib.my.*)
+│   └── nixgl/              # Wrapper OpenGL para distros não-NixOS
 ├── nixos/                  # Configurações de sistema operacional NixOS
 │   ├── default.nix         # Módulo base do NixOS
 │   ├── hosts/              # Configurações específicas de cada computador (hardware/rede)
@@ -25,7 +29,7 @@ Bem-vindo à Wiki do repositório `nixfiles`. Este documento serve como um guia 
 │   └── users/              # Perfis e dotfiles do usuário
 ├── modules/
 │   ├── nixos/              # Módulos reutilizáveis do NixOS (boot, hardware, serviços, etc.)
-│   └── home-manager/       # Módulos reutilizáveis de usuário (shell, terminal, apps, etc.)
+│   └── home-manager/       # Módulos reutilizáveis de usuário (desktop, shell, apps, etc.)
 ├── overlays/               # Sobrescrita e adição de pacotes ao nixpkgs
 └── pkgs/                   # Pacotes locais customizados
 ```
@@ -36,31 +40,39 @@ Bem-vindo à Wiki do repositório `nixfiles`. Este documento serve como um guia 
 
 O `nixos-rebuild` é a ferramenta responsável por aplicar as configurações de sistema no NixOS (kernel, serviços, drivers, usuários do sistema).
 
+### 🖥️ Máquinas NixOS Registradas
+
+Conforme declarado em `hosts.nix` sob `nixos`:
+- **`rocinante`**: Computador físico principal (DWM-Titus).
+- **`rocinante-vm`**: Máquina virtual KVM/QEMU (BSPWM).
+- **`rocinante-hyperv`**: Máquina virtual Hyper-V (BSPWM).
+- **`iso-rocinante`**: Live ISO gráfica de recuperação (XFCE4).
+
 ### 🛠️ Aplicando Configurações
 
-- **`sudo nixos-rebuild switch --flake .#hostname`**  
+- **`sudo nixos-rebuild switch --flake .#rocinante`**  
   Compila a nova configuração, ativa-a imediatamente no sistema em execução e torna-a a opção padrão de boot.
 
-- **`sudo nixos-rebuild test --flake .#hostname`**  
+- **`sudo nixos-rebuild test --flake .#rocinante`**  
   Testa a nova configuração no sistema atual **sem alterar a opção padrão do boot**. Se você reiniciar o computador, ele voltará para a versão anterior. Excelente para testar modificações arriscadas.
 
-- **`sudo nixos-rebuild boot --flake .#hostname`**  
+- **`sudo nixos-rebuild boot --flake .#rocinante`**  
   Compila e adiciona a nova configuração ao menu de boot (GRUB/Systemd-boot), mas **não altera a sessão atual**. A alteração só entra em vigor no próximo reinício.
 
-- **`sudo nixos-rebuild dry-build --flake .#hostname`**  
+- **`sudo nixos-rebuild dry-build --flake .#rocinante`**  
   Apenas compila as derivações e mostra o que mudaria no sistema, sem ativar nada.
 
 ### 📦 Builds e Imagens ISO
 
-- **`nix build .#nixosConfigurations.hostname.config.system.build.toplevel`**  
+- **`nix build .#nixosConfigurations.rocinante.config.system.build.toplevel`**  
   Compila o sistema NixOS completo no `/nix/store` e cria um link simbólico `result` no diretório atual. Utilitário para checar se a compilação do sistema passa sem erros.
 
 - **`nix build .#nixosConfigurations.iso-console.config.system.build.isoImage`**  
-  Gera uma imagem ISO bootável do NixOS customizada (o arquivo `.iso` estará dentro de `./result/iso/`).
+  Gera uma imagem ISO bootável do NixOS customizada (o arquivo `.iso` estará dentro de `./result/iso/`). Outras ISOs disponíveis em `hosts.nix`: `iso-xfce4`, `iso-bspwm`, `iso-dwm`, `iso-gnome`, `iso-mate`, `iso-pantheon`.
 
 ### 🌐 Instalação Remota com `nixos-anywhere`
 
-- **`nix run github:numtide/nixos-anywhere -- --flake .#hostname root@<IP_DA_MAQUINA>`**  
+- **`nix run github:numtide/nixos-anywhere -- --flake .#rocinante-vm root@<IP_DA_MAQUINA>`**  
   Instala o NixOS remotamente via SSH em qualquer servidor/máquina com suporte a Linux básico.
 
 ---
@@ -69,13 +81,23 @@ O `nixos-rebuild` é a ferramenta responsável por aplicar as configurações de
 
 O Home Manager gerencia seu ambiente de usuário: dotfiles, configurações de programas (`.config`), pacotes instalados apenas para o seu usuário e serviços do usuário (`systemd --user`).
 
+### 💻 Ambientes Standalone Registrados
+
+Conforme declarado em `hosts.nix` sob `home`:
+- **`juca@fedora`**: Fedora (BSPWM).
+- **`juca@anubis`**: Fedora (MangoWM + Noctalia Shell).
+- **`juca@nitro`**: Debian Laptop com GPU híbrida Intel UHD (BSPWM).
+- **`juca@virtual`**: Debian em VM Proxmox (BSPWM).
+- **`juca@virtualvm`**: VM de desenvolvimento (DWM).
+- **`juca@anubisvm`**: Fedora em VM (BSPWM).
+
 ### 🛠️ Aplicando Mudanças
 
-- **`home-manager switch --flake .#user@hostname`**  
-  Compila e aplica suas configurações de usuário no sistema atual (para distros Linux tradicionais como Fedora, Arch, Ubuntu ou standalone).
+- **`home-manager switch --flake .#juca@fedora`**  
+  Compila e aplica suas configurações de usuário no sistema atual (para distros Linux tradicionais como Fedora, Debian ou standalone).
 
 - **`home-manager news`**  
-  Exibe novidades e avisos de deprecamento das últimas atualizações do Home Manager.
+  Exibe novidades e avisos de depreciação das últimas atualizações do Home Manager.
 
 ### 📜 Gerenciando Gerações e Histórico
 
@@ -144,19 +166,26 @@ Com o tempo, compilações antigas e versões anteriores do sistema acumulam no 
 
 ## ➕ 6. Como Adicionar Novas Configurações
 
+Neste repositório, novos computadores são registrados de forma centralizada em `hosts.nix`. Não é necessário editar `flake.nix`.
+
 ### Adicionar uma nova máquina no Home Manager (Standalone)
 1. Crie uma pasta `home-manager/hosts/minhamaquina/default.nix`.
-2. Adicione a entrada em `flake.nix` sob `homeConfigurations`:
+2. Adicione a entrada em `hosts.nix` sob `home`:
    ```nix
-   "juca@minhamaquina" = helper.mkHome { hostname = "minhamaquina"; desktop = "bspwm"; };
+   minhamaquina = {
+     desktop = "bspwm"; # ou mangowm, dwm, hyprland, xfce4
+   };
    ```
 3. Aplique com `home-manager switch --flake .#juca@minhamaquina`.
 
 ### Adicionar uma nova máquina no NixOS
-1. Crie uma pasta `nixos/hosts/minhamaquina/` com `default.nix` e `hardware-configuration.nix`.
-2. Adicione a entrada em `flake.nix` sob `nixosConfigurations`:
+1. Crie uma pasta `nixos/hosts/minhamaquina/` contendo `default.nix` e `hardware-configuration.nix`.
+2. Adicione a entrada em `hosts.nix` sob `nixos`:
    ```nix
-   minhamaquina = helper.mkNixos { hostname = "minhamaquina"; desktop = "xfce4"; };
+   minhamaquina = {
+     desktop = "dwm"; # ou bspwm, mangowm, xfce4, etc.
+     stateVersion = "24.11";
+   };
    ```
 3. Aplique com `sudo nixos-rebuild switch --flake .#minhamaquina`.
 
@@ -182,13 +211,12 @@ Este repositório suporta múltiplos gerenciadores de janelas (como **Hyprland**
 
 Siga este roteiro sempre que for ativar, trocar ou sincronizar um Tiling Manager via Home Manager:
 
-#### 1️⃣ Declarar o Ambiente no `flake.nix`
-Edite a entrada do seu host em `flake.nix`:
+#### 1️⃣ Declarar o Ambiente em `hosts.nix`
+Edite a entrada do seu host em `hosts.nix`:
 ```nix
-# Exemplo para Home Manager Standalone:
-"juca@fedora" = helper.mkHome {
-  hostname = "fedora";
-  desktop = "hyprland"; # ou "bspwm"
+# Exemplo para Home Manager Standalone em hosts.nix sob "home":
+fedora = {
+  desktop = "bspwm"; # ou "mangowm", "hyprland", "dwm"
 };
 ```
 
