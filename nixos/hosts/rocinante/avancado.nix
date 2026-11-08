@@ -163,7 +163,8 @@ in
         configuration = {
           system.nixos.tags = [ "nvidia-kernel-6.6" ];
           boot = {
-            kernelPackages = pkgs.linuxPackages_6_6;
+            # Justification: Override base kernelPackages with Linux 6.6 LTS for legacy NVIDIA 340 kernel module compatibility
+            kernelPackages = mkForce pkgs.linuxPackages_6_6;
             # Justification: Completely replace base kernel params list for legacy NVIDIA 340 driver boot.
             kernelParams = mkForce [
               "zswap.enabled=0"
