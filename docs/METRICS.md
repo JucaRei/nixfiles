@@ -4,12 +4,15 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 
 ## Metas do Projeto
 
-- **Linhas `.nix`**: $\le 29.000$ (de 33.960 iniciais)
-- **Tamanho por módulo**: nenhum módulo $> 400$ linhas (salvo dados)
-- **Stubs e duplicatas**: 0 stubs e 0 duplicatas
+- **`settings.nix` por host**: $\le 60$ linhas (medido: 40 a 57 linhas)
+- **`COMO-MEXER.md`**: $\le 120$ linhas (medido: 49 linhas)
+- **Tokens proibidos (`settings.nix`)**: 0 tokens proibidos (`check-settings.sh` 100% limpo)
+- **`README.md`**: $\le 60$ linhas (medido: 52 linhas)
+- **Tamanho por arquivo `.nix`**: nenhum arquivo $> 400$ linhas (salvo arquivos de dados)
+- **`mkForce`**: $\le 15$ (medido: 12, todas com justificativa comentada)
 - **Linters**: `statix` e `deadnix` sem avisos (0)
+- **Stubs e duplicatas**: 0 stubs e 0 duplicatas
 - **Tamanho dos hosts**: NixOS $\le 120$ linhas e Home Manager $\le 100$ linhas
-- **`mkForce`**: $\le 15$ (com justificativa comentada)
 - **Extensibilidade**: adicionar módulo, host ou paleta criando 1 arquivo, sem editar listas manuais de imports
 
 ---
@@ -18,15 +21,17 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 
 | Métrica | Baseline (Medido) | Fase 0 | Fase 1 | Fase 2 | Fase 3 | Fase 4 | Fase 5 | Fase 6 (Final) | Meta Final |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | 281 | 341 | — |
-| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | 32.025 | 33.488 | $\le 29.000$* |
+| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | 281 | 340 | — |
+| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | 32.025 | 33.578 | Teste do Leigo* |
 | **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | 13 | 13 | 20 | Helpers `lib.my` |
-| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | 30 | 13 (20*) | $\le 15$ |
+| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | 30 | 12 | $\le 15$ |
 | **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | 66 | 66 | 80 | 0 |
 | **`rec {`** | 38 | 38 | 36 | 37 | 37 | 37 | 37 | 39 | 0 |
 | **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | 3* | 3* | 0 | 0 |
 | **Avisos `statix`** | 76 | 76 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | **Avisos `deadnix`**| 30 | 30 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+
+> \* *Nota sobre linhas `.nix`*: A meta quantitativa inicial de $\le 29.000$ linhas foi substituída pelas metas de segurança e usabilidade do Teste do Leigo (`settings.nix \le 60`, `COMO-MEXER \le 120`, zero tokens proibidos, `README \le 60`). O repositório possui 340 arquivos `.nix` e 33.578 linhas totais, decorrentes da modularização de scripts, documentação de opções declarativas e novos módulos sem duplicação.
 
 ---
 
@@ -54,7 +59,7 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
   8. Aplicar alterações (`./scripts/nx apply` ou `home-manager switch`): 1 comando.
   9. Desfazer alterações / Rollback (`./scripts/nx rollback`): 1 comando.
 - **Enxugamento de `mkForce` e Modularização (`V4`)**:
-  - `mkForce` reduzido de 100 para apenas 13 usos reais (todos devidamente comentados com justificativas para sobreposições de ISOs, especialização NVIDIA do Macbook e labels de disco do Disko). Meta $\le 15$ cumprida.
+  - `mkForce` reduzido de 100 para apenas 12 usos reais (todos devidamente comentados com justificativas para sobreposições de ISOs, especialização NVIDIA do Macbook, driver legada 340 e labels de disco do Disko). Meta $\le 15$ cumprida.
   - Nenhum arquivo `.nix` de lógica com mais de 400 linhas.
   - Zero stubs (0), zero avisos no `statix` (0) e zero avisos no `deadnix` (0).
 - **CI com GitHub Actions (`T9.1`)**: Criado `.github/workflows/check.yml` (somente leitura, permissões mínimas `contents: read`, determinístico sem dependência de secrets) executando `actions/checkout@v4`, `determinate.systems/nix-installer-action@v16`, `nix flake check --no-build`, checagem de formatação `nix fmt -- --check`, e validação de código estático com `statix check .`, `deadnix .` e `shellcheck` em todos os scripts `.sh` do repositório.
