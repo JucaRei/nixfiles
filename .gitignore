@@ -2,7 +2,8 @@
 result/*
 ./result/*
 result
-# .vscode/
+.vscode/*
+!.vscode/settings.json
 .qwen*
 .test_ssh.sh
 .snapshots/
