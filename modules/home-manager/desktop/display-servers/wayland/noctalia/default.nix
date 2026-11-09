@@ -1,3 +1,6 @@
+# What it is: Noctalia shell desktop interface (launcher, panels, bar, lock, notifications) for Wayland.
+# How to enable: Set `waylandShell = "noctalia";` in hosts.nix or `desktop.wayland.shell = "noctalia";`.
+# Example: desktop.wayland.shell = "noctalia";
 {
   config,
   lib,

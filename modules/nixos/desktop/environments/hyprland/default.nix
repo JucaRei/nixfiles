@@ -1,3 +1,6 @@
+# What it is: Hyprland Wayland compositor system integration for NixOS (xdg-desktop-portal, hyprlock PAM, regreet).
+# How to enable: Set `desktop = "hyprland";` in hosts.nix.
+# Example: desktop = "hyprland";
 { pkgs, ... }:
 {
   config = {

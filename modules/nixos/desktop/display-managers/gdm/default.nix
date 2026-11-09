@@ -1,3 +1,6 @@
+# What it is: GNOME Display Manager (GDM) service configuration for NixOS.
+# How to enable: Set `desktop.display-managers.gdm.enable = true;`.
+# Example: desktop.display-managers.gdm.enable = true;
 {
   config,
   lib,

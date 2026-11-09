@@ -1,3 +1,6 @@
+# What it is: XFCE4 desktop environment settings (Xfconf, panel, shortcuts, thunar).
+# How to enable: Set `desktop = "xfce4";` in hosts.nix.
+# Example: desktop = "xfce4";
 {
   config,
   lib,

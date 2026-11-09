@@ -1,3 +1,6 @@
+# What it is: Simple Desktop Display Manager (SDDM) service with themes and Wayland support.
+# How to enable: Set `desktop.display-managers.sddm.enable = true;`.
+# Example: desktop.display-managers.sddm.enable = true;
 {
   config,
   pkgs,

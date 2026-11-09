@@ -1,3 +1,6 @@
+# What it is: KDE Plasma desktop environment system configuration for NixOS (SDDM, Wayland, sound theme).
+# How to enable: Set `desktop = "plasma";` in hosts.nix.
+# Example: desktop = "plasma";
 {
   config,
   lib,

@@ -1,3 +1,6 @@
+# What it is: MangoWM Wayland compositor system integration for NixOS (flaked package, session variables, regreet).
+# How to enable: Set `desktop = "mangowm";` in hosts.nix.
+# Example: desktop = "mangowm";
 { pkgs, inputs, ... }:
 let
   mangoPkg =

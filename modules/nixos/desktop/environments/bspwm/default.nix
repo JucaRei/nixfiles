@@ -1,3 +1,6 @@
+# What it is: BSPWM window manager system integration for NixOS (X11, LightDM, polkit).
+# How to enable: Set `desktop = "bspwm";` in hosts.nix.
+# Example: desktop = "bspwm";
 { lib, pkgs, ... }:
 let
   inherit (lib) mkDefault;

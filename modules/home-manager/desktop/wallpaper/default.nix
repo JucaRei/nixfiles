@@ -97,8 +97,8 @@ in
     enable = mkEnableOption "gerenciador e script agnóstico de wallpaper (X11 / Wayland) com suporte multi-monitor e timer";
 
     directory =
-      lib.my.mkOpt (lib.types.nullOr lib.types.str) null
-        "Caminho da pasta de wallpapers no host.";
+      lib.my.mkOptEx (lib.types.nullOr lib.types.str) null "Caminho da pasta de wallpapers no host."
+        "/home/juca/Pictures/Wallpapers";
 
     default = lib.my.mkOpt (lib.types.nullOr (
       lib.types.either lib.types.path lib.types.str

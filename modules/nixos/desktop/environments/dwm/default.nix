@@ -1,3 +1,6 @@
+# What it is: DWM window manager system integration for NixOS (X11 session wrapper, polkit, brightnessctl).
+# How to enable: Set `desktop = "dwm";` in hosts.nix.
+# Example: desktop = "dwm";
 { lib, pkgs, ... }:
 let
   inherit (lib) mkDefault;

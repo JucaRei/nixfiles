@@ -1,3 +1,6 @@
+# What it is: XFCE desktop environment system configuration for NixOS (LightDM, X11, pavucontrol, nm-applet).
+# How to enable: Set `desktop = "xfce4";` in hosts.nix.
+# Example: desktop = "xfce4";
 { pkgs, lib, ... }:
 let
   inherit (lib) mkDefault;

@@ -1,3 +1,6 @@
+# What it is: LightDM display manager service with slick greeter and autologin for NixOS.
+# How to enable: Set `desktop.display-managers.lightdm.enable = true;`.
+# Example: desktop.display-managers.lightdm.enable = true;
 {
   config,
   lib,

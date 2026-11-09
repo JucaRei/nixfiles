@@ -1,3 +1,6 @@
+# What it is: ReGreet (Greetd) clean modern Wayland greeter service for NixOS.
+# How to enable: Set `desktop.display-managers.regreet.enable = true;`.
+# Example: desktop.display-managers.regreet.enable = true;
 {
   config,
   lib,

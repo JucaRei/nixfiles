@@ -1,3 +1,6 @@
+# What it is: Pantheon desktop environment (elementary OS) system configuration for NixOS.
+# How to enable: Set `desktop = "pantheon";` in hosts.nix.
+# Example: desktop = "pantheon";
 {
   isInstall,
   lib,
