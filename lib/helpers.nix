@@ -184,12 +184,22 @@ let
                 lib.mkIf (osConfig ? desktop) {
                   desktop = {
                     theme = {
-                      name = lib.mkOverride 900 osConfig.desktop.theme.name;
-                      accent = lib.mkOverride 900 osConfig.desktop.theme.accent;
+                      name = lib.mkIf (osConfig.desktop.theme.name != null) (
+                        lib.mkOverride 900 osConfig.desktop.theme.name
+                      );
+                      accent = lib.mkIf (osConfig.desktop.theme.accent != null) (
+                        lib.mkOverride 900 osConfig.desktop.theme.accent
+                      );
                     };
-                    modifierKey = lib.mkOverride 900 osConfig.desktop.modifierKey;
-                    wallpaper.directory = lib.mkOverride 900 osConfig.desktop.wallpaper.directory;
-                    monitors = lib.mkOverride 900 osConfig.desktop.monitors;
+                    modifierKey = lib.mkIf (osConfig.desktop.modifierKey != null) (
+                      lib.mkOverride 900 osConfig.desktop.modifierKey
+                    );
+                    wallpaper.directory = lib.mkIf (osConfig.desktop.wallpaper.directory != null) (
+                      lib.mkOverride 900 osConfig.desktop.wallpaper.directory
+                    );
+                    monitors = lib.mkIf (osConfig.desktop.monitors != null) (
+                      lib.mkOverride 900 osConfig.desktop.monitors
+                    );
                   };
                 }
               )
