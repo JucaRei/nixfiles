@@ -10,7 +10,7 @@
 
     # Modifier key for shortcuts
     # options: Super | Alt
-    modifierKey = "Super";
+    modifierKey = "Alt";
 
     # Wallpaper directory or image path
     wallpaper.directory = "/home/juca/Pictures/Wallpapers";
