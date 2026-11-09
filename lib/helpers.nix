@@ -308,13 +308,20 @@ let
                 touch $out
               '';
 
-          settings = pkgs.runCommand "check-settings" { } ''
-            if grep -rnE "lib\.|let|mk" ${self}/home-manager/hosts/*/settings.nix ${self}/nixos/hosts/*/settings.nix; then
-              echo "Error: settings.nix must contain only simple values without lib., let or mk!" >&2
-              exit 1
-            fi
-            touch $out
-          '';
+          settings =
+            pkgs.runCommand "check-settings"
+              {
+                nativeBuildInputs = [
+                  pkgs.bash
+                  pkgs.gawk
+                  pkgs.gnused
+                  pkgs.gnugrep
+                ];
+              }
+              ''
+                ${pkgs.bash}/bin/bash ${self}/scripts/check-settings.sh ${self}
+                touch $out
+              '';
         };
       in
       # Todos os hosts atuais são x86_64; evita avaliar em aarch64.
