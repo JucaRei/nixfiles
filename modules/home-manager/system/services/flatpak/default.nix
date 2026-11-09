@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -47,6 +48,8 @@ in
   };
 
   config = mkIf cfg.enable {
+    home.packages = [ pkgs.flatpak ];
+
     # Integração com o módulo upstream nix-flatpak
     services.flatpak = {
       enable = true;
