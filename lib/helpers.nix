@@ -184,12 +184,12 @@ let
                 lib.mkIf (osConfig ? desktop) {
                   desktop = {
                     theme = {
-                      name = lib.mkDefault osConfig.desktop.theme.name;
-                      accent = lib.mkDefault osConfig.desktop.theme.accent;
+                      name = lib.mkOverride 900 osConfig.desktop.theme.name;
+                      accent = lib.mkOverride 900 osConfig.desktop.theme.accent;
                     };
-                    modifierKey = lib.mkDefault osConfig.desktop.modifierKey;
-                    wallpaper.directory = lib.mkDefault osConfig.desktop.wallpaper.directory;
-                    monitors = lib.mkDefault osConfig.desktop.monitors;
+                    modifierKey = lib.mkOverride 900 osConfig.desktop.modifierKey;
+                    wallpaper.directory = lib.mkOverride 900 osConfig.desktop.wallpaper.directory;
+                    monitors = lib.mkOverride 900 osConfig.desktop.monitors;
                   };
                 }
               )
@@ -197,6 +197,7 @@ let
             extraSpecialArgs = commonArgs // {
               useNixGL = false;
               nixGLWrapper = lib.id;
+              nixGLType = null;
             };
           };
         }

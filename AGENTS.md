@@ -8,6 +8,20 @@ Detalhes de host ou de módulo ficam no README mais próximo do código (ver [On
 Configuração declarativa com **Nix Flakes** para **NixOS** e **Home Manager** (integrado e standalone).
 Usuário padrão: `juca`. Idioma: comentários e docs em pt-BR; identificadores e options em inglês.
 
+## Navegação Rápida ("Quero mexer em... → vá para...")
+
+| Quero... | Onde mexer | Documentação / Guia |
+|---|---|---|
+| Mudar tema, cor de destaque, wallpaper ou monitor de um host | `<home-manager\|nixos>/hosts/<host>/settings.nix` | [COMO-MEXER.md](docs/COMO-MEXER.md#receitas-do-teste-do-leigo) |
+| Instalar ou remover programas (CLI / GUI) | `<home-manager\|nixos>/hosts/<host>/settings.nix` (`my.apps.*`) | [COMO-MEXER.md](docs/COMO-MEXER.md#3-instalar-um-programa-cli-ou-gui) |
+| Criar uma nova máquina | `./scripts/nx new-host` | [COMO-MEXER.md](docs/COMO-MEXER.md#7-criar-uma-nova-máquina-host) |
+| Registrar / alterar arquitetura, plataforma ou WM de hosts | `hosts.nix` | [hosts.nix](hosts.nix) |
+| Modificar configurações avançadas de um host | `<home-manager\|nixos>/hosts/<host>/avancado.nix` | AGENTS.md local do host |
+| Alterar perfis compartilhados de usuário ou sistema | `profiles/home/` ou `profiles/nixos/` | [profiles/](profiles/) |
+| Adicionar novo módulo de usuário ou sistema | Criar pasta em `modules/<hm\|nixos>/.../` com `default.nix` (auto-import) | Regra 10 (Convenções Nix) |
+| Consultar tipos e opções declarativas disponíveis | `docs/OPTIONS.md` | [OPTIONS.md](docs/OPTIONS.md) |
+| Testar, aplicar ou fazer rollback de configurações | `./scripts/nx <check\|apply\|rollback>` | [COMO-MEXER.md](docs/COMO-MEXER.md#8-aplicar-as-alterações) |
+
 ## Mapa do repositório
 
 | Caminho | Conteúdo |

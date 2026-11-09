@@ -34,7 +34,7 @@ in
       graphics.cards = {
         enable = true;
         acceleration = true;
-        gpu = null; # Padrão: driver open-source nouveau + Mesa nativa
+        gpu = mkDefault null; # Padrão: driver open-source nouveau + Mesa nativa
       };
 
       # Firmware redistribuível (essencial para Wi-Fi Broadcom e Microcode Intel)

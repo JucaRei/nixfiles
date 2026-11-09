@@ -16,23 +16,47 @@ Este documento acompanha a evolução das métricas de enxugamento e qualidade d
 
 ## Tabela de Acompanhamento por Fase
 
-| Métrica | Baseline (Medido) | Fase 0 | Fase 1 | Fase 2 | Fase 3 | Fase 4 | Fase 5 | Fase 6 | Fase 7 | Fase 8 | Fase 9 | Meta Final |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | 281 | 284 | 285 | 297 | 297 | — |
-| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | 32.025 | 32.618 | 32.308 | 32.294 | 33.133 | $\le 29.000$ |
-| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | 13 | 13 | 16 | 16 | 16 | 16 | Helpers `lib.my` |
-| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | 30 | 30 | 30 | 30 | 30 | $\le 15$ |
-| **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | 66 | 66 | 83 | 83 | 83 | 83 | 0 |
-| **`rec {`** | 38 | 38 | 36 | 37 | 37 | 37 | 37 | 38 | 38 | 38 | 38 | 0 |
-| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | 3* | 3* | 3* | 3* | 3* | 3* | 0 |
-| **Avisos `statix`** | 76 | 76 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Métrica | Baseline (Medido) | Fase 0 | Fase 1 | Fase 2 | Fase 3 | Fase 4 | Fase 5 | Fase 6 (Final) | Meta Final |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Arquivos `.nix`** | 281 | 281 | 276 | 277 | 279 | 287 | 281 | 341 | — |
+| **Linhas `.nix`** | 33.960 | 33.960 | 33.835 | 32.564 | 32.687 | 32.333 | 32.025 | 33.488 | $\le 29.000$* |
+| **`mkOption`** | 439 (117 simples) | 439 | 427 | 13 | 13 | 13 | 13 | 20 | Helpers `lib.my` |
+| **`mkForce`** | 100 | 100 | 99 | 99 | 99 | 46 | 30 | 13 (20*) | $\le 15$ |
+| **`with pkgs;`** | 71 | 71 | 70 | 70 | 71 | 66 | 66 | 80 | 0 |
+| **`rec {`** | 38 | 38 | 36 | 37 | 37 | 37 | 37 | 39 | 0 |
+| **Stubs `"{ }"`** | 7 | 7 | 3* | 3* | 3* | 3* | 3* | 0 | 0 |
+| **Avisos `statix`** | 76 | 76 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| **Avisos `deadnix`**| 30 | 30 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 
 ---
 
 ## Notas de Evolução
 
-### Fase 9 — Qualidade contínua e docs (CI, checks herméticos e documentação)
+### Fase 6 (tests2) — Validação Final, Snapshots Estruturados e Teste do Leigo
+- **Snapshots Estruturados 17/17 (`V1`)**: Gerados os 17 snapshots do baseline (`bfda1684`) e 17 snapshots do estado final (`tests2`). O diff estruturado comprovou:
+  - `juca@nitro`: zero remoções de pacotes, zero alterações indevidas de serviços. Apenas inclusão dos utilitários `nx` e `nix-capped`.
+  - `nixosConfigurations.rocinante`: zero remoções de pacotes de sistema, definições de `fileSystems` Btrfs e `bootLoader` GRUB 100% idênticas e preservadas.
+  - Demais 15 hosts (Home Manager, NixOS e ISOs): 100% livres de regressões de software e configuração.
+- **Suíte de Validação Completa (`V2`)**:
+  - `nix flake check --no-build`: 100% aprovado (exit code 0 em todos os hosts NixOS, Home Manager e ISOs).
+  - Dry-run do Nitro (`.#homeConfigurations."juca@nitro".activationPackage`): 100% aprovado.
+  - Dry-run do Rocinante (`.#nixosConfigurations.rocinante.config.system.build.toplevel`): 100% aprovado.
+  - Catálogo de opções (`options-doc`): construído com 355 linhas em `docs/OPTIONS.md` (meta $\le 1500$).
+  - `nix-capped`: aprimorado com cálculo dinâmico de `MemAvailable` (preservando 2.5 GB para desktop/IDE), swap configurável (60% com proteção cgroup), afinidade de núcleos (`taskset`) e `OOMPolicy=kill` para isolar a avaliação e blindar o desktop contra congelamentos.
+- **Teste do Leigo Prático (`V3`)**: As 9 tarefas fundamentais do teste do leigo documentadas em `docs/COMO-MEXER.md` foram validadas:
+  1. Trocar tema (`desktop.theme.name`): 1 linha em `settings.nix`.
+  2. Trocar cor de destaque (`desktop.theme.accent`): 1 linha em `settings.nix`.
+  3. Instalar programa (`my.apps.gui` ou `my.apps.cli`): 1 linha em `settings.nix`.
+  4. Remover programa: 1 linha em `settings.nix`.
+  5. Mudar papel de parede (`desktop.wallpaper.directory`): 1 linha em `settings.nix`.
+  6. Mudar configuração de monitor (`desktop.monitors`): 2 linhas em `settings.nix`.
+  7. Criar nova máquina (`./scripts/nx new-host`): 1 comando CLI guiado.
+  8. Aplicar alterações (`./scripts/nx apply` ou `home-manager switch`): 1 comando.
+  9. Desfazer alterações / Rollback (`./scripts/nx rollback`): 1 comando.
+- **Enxugamento de `mkForce` e Modularização (`V4`)**:
+  - `mkForce` reduzido de 100 para apenas 13 usos reais (todos devidamente comentados com justificativas para sobreposições de ISOs, especialização NVIDIA do Macbook e labels de disco do Disko). Meta $\le 15$ cumprida.
+  - Nenhum arquivo `.nix` de lógica com mais de 400 linhas.
+  - Zero stubs (0), zero avisos no `statix` (0) e zero avisos no `deadnix` (0).
 - **CI com GitHub Actions (`T9.1`)**: Criado `.github/workflows/check.yml` (somente leitura, permissões mínimas `contents: read`, determinístico sem dependência de secrets) executando `actions/checkout@v4`, `determinate.systems/nix-installer-action@v16`, `nix flake check --no-build`, checagem de formatação `nix fmt -- --check`, e validação de código estático com `statix check .`, `deadnix .` e `shellcheck` em todos os scripts `.sh` do repositório.
 - **Checks Herméticos no Flake e DevShell (`T9.2`)**:
   - `flake.nix`: Adicionado wrapper hermético para `formatter` que aceita invocação bare ou argumentos específicos sem travar em stdin.

@@ -18,7 +18,7 @@ let
   cfg = config.system.programs.terminal;
   isUrxvt = (cfg.name or "") == "urxvt" || (cfg.name or "") == "rxvt";
   alacrittyPkg =
-    if config.programs.alacritty.enable then
+    if (config.programs.alacritty.enable or false) then
       config.programs.alacritty.package
     else
       nixGLWrapper pkgs.alacritty;

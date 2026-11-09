@@ -1,30 +1,94 @@
 { pkgs, lib }:
 
 let
+  myLib =
+    (import ../../../lib/options.nix { inherit lib; })
+    // (import ../../../lib/import-dir.nix { inherit lib; })
+    // {
+      disk = {
+        btrfs = import ../../../lib/disk/btrfs.nix;
+      };
+      theme = import ../../../modules/home-manager/desktop/theme/lib.nix { inherit lib; };
+    };
+
+  extendedLib = lib.extend (
+    _self: _super: {
+      my = myLib;
+    }
+  );
+
+  commonArgs = {
+    inherit pkgs;
+    inputs = { };
+    inherit myLib;
+    desktop = null;
+    hostname = "docs";
+    username = "juca";
+    waylandShell = "traditional";
+    platform = "x86_64-linux";
+    stateVersion = "26.05";
+    isISO = false;
+    isInstall = true;
+    isWorkstation = false;
+    isVM = false;
+    notVM = true;
+    hostid = null;
+    nixGLWrapper = lib.id;
+    nixGLType = null;
+    useNixGL = false;
+    osConfig = null;
+  };
+
   # Evaluate Home Manager modules in isolation to extract declarations
-  evalHM = lib.evalModules {
+  evalHM = extendedLib.evalModules {
     modules = [
       ../../../modules/home-manager
-      { _module.check = false; }
+      {
+        config = {
+          _module = {
+            check = false;
+            args = {
+              lib = extendedLib;
+              inherit pkgs;
+            };
+          };
+        };
+        options.home = {
+          keyboard = lib.mkOption {
+            default = null;
+            type = lib.types.anything;
+          };
+          homeDirectory = lib.mkOption {
+            default = "/home/juca";
+            type = lib.types.str;
+          };
+          username = lib.mkOption {
+            default = "juca";
+            type = lib.types.str;
+          };
+        };
+      }
     ];
-    specialArgs = {
-      inputs = { };
-      myLib = import ../../../lib/options.nix { inherit lib; };
-      nixGLWrapper = lib.id;
-      osConfig = null;
-    };
+    specialArgs = commonArgs;
   };
 
   # Evaluate NixOS modules in isolation
-  evalNixOS = lib.evalModules {
+  evalNixOS = extendedLib.evalModules {
     modules = [
       ../../../modules/nixos
-      { _module.check = false; }
+      {
+        config = {
+          _module = {
+            check = false;
+            args = {
+              lib = extendedLib;
+              inherit pkgs;
+            };
+          };
+        };
+      }
     ];
-    specialArgs = {
-      inputs = { };
-      myLib = import ../../../lib/options.nix { inherit lib; };
-    };
+    specialArgs = commonArgs;
   };
 
   # Recursively collect options into a flat list

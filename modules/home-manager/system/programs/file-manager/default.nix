@@ -189,6 +189,8 @@ in
             Description = "Virtual filesystem service - GNOME FUSE daemon";
             After = [ "gvfs-daemon.service" ];
             PartOf = [ "default.target" ];
+            StartLimitIntervalSec = 60;
+            StartLimitBurst = 3;
           };
           Service = {
             Type = "simple";
@@ -199,7 +201,7 @@ in
             ExecStart = "${pkgs.gvfs}/libexec/gvfsd-fuse -f %t/gvfs";
             ExecStop = "-/bin/sh -c 'fusermount3 -u -z %t/gvfs 2>/dev/null || fusermount -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount3 -u -z %t/gvfs 2>/dev/null || /usr/bin/fusermount -u -z %t/gvfs 2>/dev/null || true'";
             Restart = "on-failure";
-            RestartSec = 3;
+            RestartSec = 10;
           };
           Install = {
             WantedBy = [ "default.target" ];
