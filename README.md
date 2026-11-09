@@ -31,9 +31,11 @@ sudo nixos-rebuild switch --flake .#rocinante
 # Em máquina virtual: sudo nixos-rebuild switch --flake .#rocinante-vm
 ```
 
-### Verificação do Repositório (com limite de 50% CPU, 50% RAM e 20% Swap)
+### Verificação do Repositório (com limite de 50% de CPU, 50% de RAM e até 60% de swap)
 ```bash
 nfc
+# Em máquinas com pouca memória, use NX_LOW_MEMORY=1 para o modo econômico (40% CPU, 40% RAM, até 60% swap):
+# NX_LOW_MEMORY=1 nfc
 ```
 
 ---

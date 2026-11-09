@@ -76,7 +76,7 @@ nix eval .#nixosConfigurations.<host>.config.system.stateVersion
 nix eval .#homeConfigurations."juca@<host>".config.home.stateVersion
 nix build .#nixosConfigurations.<host>.config.system.build.toplevel --dry-run
 nix build .#homeConfigurations."juca@<host>".activationPackage --dry-run
-nix flake check --no-build                   # só no fechamento (ou 'nfc60' para limitar a 40% CPU e até metade da RAM)
+nix flake check --no-build                   # só no fechamento (ou 'nfc' para limitar a 50% CPU, 50% RAM e até 60% swap; NX_LOW_MEMORY=1 para modo econômico)
 ```
 
 Para configs geradas, validar também com a ferramenta do programa (ex.: `mango -c <arquivo> -p`).

@@ -16,7 +16,7 @@ Uso:
 
 Comandos disponíveis:
   apply             Aplica as alterações na máquina atual (pede confirmação)
-  check             Valida a integridade do repositório (com limites de segurança)
+  check             Valida a integridade do repositório (50% de CPU, 50% de RAM e até 60% de swap; use NX_LOW_MEMORY=1 para modo econômico)
   rollback          Volta para a versão/geração anterior do sistema
   list-generations  Lista as versões/gerações salvas no sistema
   new-host <nome>   Cria uma nova máquina a partir do modelo e a registra em hosts.nix
@@ -102,7 +102,10 @@ cmd_apply() {
 
 cmd_check() {
   cd "$REPO_DIR"
-  echo "==> 🔍 Executando verificação de integridade com limite de recursos..."
+  echo "==> 🔍 Executando verificação de integridade (50% de CPU, 50% de RAM e até 60% de swap)..."
+  if [ "${NX_LOW_MEMORY:-0}" = "1" ] || [ "${NX_LOW_MEMORY:-false}" = "true" ]; then
+    echo "    ℹ️ Modo econômico ativo (NX_LOW_MEMORY=1: 40% de CPU, 40% de RAM e até 60% de swap)."
+  fi
   if command -v nix-check-capped >/dev/null 2>&1; then
     nix-check-capped "$@"
   elif [ -x "$REPO_DIR/scripts/nix-check-capped" ]; then

@@ -11,10 +11,24 @@ if [ "${CI:-false}" = "true" ]; then
   exec "$@"
 fi
 
-# Resource cap settings from environment or default (40% CPU, 40% RAM)
-CPU_PERCENT="${CPU_PERCENT:-40}"
-RAM_PERCENT="${RAM_PERCENT:-40}"
-SWAP_PERCENT="${SWAP_PERCENT:-60}"
+# Resource cap defaults: 50% CPU, 50% RAM, 60% Swap
+# NX_LOW_MEMORY=1 sets CPU 40 / RAM 40 / SWAP 60 (explicit option only, never default)
+if [ "${NX_LOW_MEMORY:-0}" = "1" ] || [ "${NX_LOW_MEMORY:-false}" = "true" ]; then
+  DEFAULT_CPU=40
+  DEFAULT_RAM=40
+  DEFAULT_SWAP=60
+  IS_LOW_MEM=1
+else
+  DEFAULT_CPU=50
+  DEFAULT_RAM=50
+  DEFAULT_SWAP=60
+  IS_LOW_MEM=0
+fi
+
+# Resource cap settings from environment or default
+CPU_PERCENT="${CPU_PERCENT:-$DEFAULT_CPU}"
+RAM_PERCENT="${RAM_PERCENT:-$DEFAULT_RAM}"
+SWAP_PERCENT="${SWAP_PERCENT:-$DEFAULT_SWAP}"
 MAX_RAM_GB="${MAX_RAM_GB:-}"
 MAX_SWAP_GB="${MAX_SWAP_GB:-}"
 
@@ -29,13 +43,14 @@ TOTAL_MEM_KB=$(awk '/MemTotal/ {print $2}' /proc/meminfo 2>/dev/null || echo 0)
 AVAIL_MEM_KB=$(awk '/MemAvailable/ {print $2}' /proc/meminfo 2>/dev/null || echo 0)
 
 if [ "$TOTAL_MEM_KB" -gt 0 ]; then
-  if [ "$TOTAL_MEM_KB" -lt 3145728 ]; then
-    # Low-RAM hosts (< 3GB, ex: anubis): teto de 750MB
-    MAX_LOWRAM_BYTES=$(( 750 * 1024 * 1024 ))
+  if [ "$IS_LOW_MEM" -eq 1 ] || [ "$TOTAL_MEM_KB" -lt 3145728 ]; then
+    # Low-RAM hosts (< 3GB ou NX_LOW_MEMORY=1): limita a 800MB
+    MAX_LOWRAM_BYTES=$(( 800 * 1024 * 1024 ))
     MEM_CALCULATED_BYTES=$(( TOTAL_MEM_KB * 1024 * RAM_PERCENT / 100 ))
     if [ "$MEM_CALCULATED_BYTES" -gt "$MAX_LOWRAM_BYTES" ]; then
       MEM_CALCULATED_BYTES="$MAX_LOWRAM_BYTES"
     fi
+    MEM_HIGH_BYTES=$(( MEM_CALCULATED_BYTES * 90 / 100 ))
   else
     # Reserva no mínimo 2.5GB de RAM exclusivamente para o desktop, IDE e navegador
     RESERVE_DESKTOP_KB=$(( 2560 * 1024 ))
@@ -50,6 +65,7 @@ if [ "$TOTAL_MEM_KB" -gt 0 ]; then
     else
       MEM_CALCULATED_BYTES="$PERCENT_BYTES"
     fi
+    MEM_HIGH_BYTES=$(( MEM_CALCULATED_BYTES * 80 / 100 ))
   fi
 
   if [ -n "$MAX_RAM_GB" ]; then
@@ -59,20 +75,25 @@ if [ "$TOTAL_MEM_KB" -gt 0 ]; then
     fi
   fi
   MEM_LIMIT_BYTES="$MEM_CALCULATED_BYTES"
-  MEM_HIGH_BYTES=$(( MEM_LIMIT_BYTES * 80 / 100 ))
   MEM_LIMIT_ARG="MemoryMax=${MEM_LIMIT_BYTES}"
   MEM_HIGH_ARG="MemoryHigh=${MEM_HIGH_BYTES}"
-  MEM_HUMAN="$(( MEM_LIMIT_BYTES / 1024 / 1024 )) MB (máx ${RAM_PERCENT}% do host, preservando desktop)"
+  MEM_HUMAN="$(( MEM_LIMIT_BYTES / 1024 / 1024 )) MB (${RAM_PERCENT}% da RAM do host)"
 else
   MEM_LIMIT_ARG="MemoryMax=${RAM_PERCENT}%"
   MEM_HIGH_ARG="MemoryHigh=${RAM_PERCENT}%"
   MEM_HUMAN="${RAM_PERCENT}% da RAM"
 fi
 
-# Calculate Swap limit based on total system swap (60% do host)
+# Calculate Swap limit based on total system swap (até 60% de swap)
 TOTAL_SWAP_KB=$(awk '/SwapTotal/ {print $2}' /proc/meminfo 2>/dev/null || echo 0)
 if [ "$TOTAL_SWAP_KB" -gt 0 ]; then
   SWAP_CALCULATED_BYTES=$(( TOTAL_SWAP_KB * 1024 * SWAP_PERCENT / 100 ))
+  if { [ "$IS_LOW_MEM" -eq 1 ] || [ "$TOTAL_MEM_KB" -lt 3145728 ]; } && [ -z "$MAX_SWAP_GB" ]; then
+    HALF_GB=$(( 512 * 1024 * 1024 ))
+    if [ "$SWAP_CALCULATED_BYTES" -gt "$HALF_GB" ]; then
+      SWAP_CALCULATED_BYTES="$HALF_GB"
+    fi
+  fi
   if [ -n "$MAX_SWAP_GB" ]; then
     MAX_SWAP_BYTES=$(( MAX_SWAP_GB * 1024 * 1024 * 1024 ))
     if [ "$SWAP_CALCULATED_BYTES" -gt "$MAX_SWAP_BYTES" ]; then
@@ -87,10 +108,13 @@ else
   SWAP_HUMAN="0 MB (host sem swap)"
 fi
 
-echo "==> ⚡ Executando com limite de recursos (${CPU_PERCENT}% CPU, ${RAM_PERCENT}% RAM e Swap protegido):"
+echo "==> ⚡ Executando com limite de recursos (${CPU_PERCENT}% de CPU, ${RAM_PERCENT}% de RAM e até ${SWAP_PERCENT}% de swap):"
 echo "    • CPU: ${CPU_PERCENT}% ($TARGET_CORES de $CORES núcleos | Quota: $CPU_QUOTA)"
 echo "    • RAM: $MEM_HUMAN"
 echo "    • Swap: $SWAP_HUMAN"
+if [ "$TOTAL_SWAP_KB" -gt 0 ]; then
+  echo "    ⚠️ Aviso: Um limite alto de swap (até ${SWAP_PERCENT}%) pode deixar a máquina lenta se a verificação realmente utilizar swap."
+fi
 
 export NIX_BUILD_CORES="$TARGET_CORES"
 if [ -n "${NIX_CONFIG:-}" ]; then

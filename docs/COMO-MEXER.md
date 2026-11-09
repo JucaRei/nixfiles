@@ -2,7 +2,7 @@
 
 Tudo o que você precisa configurar pode ser feito editando apenas o arquivo `settings.nix` da sua máquina e rodando um comando.
 
-> 🔒 **Segurança**: Todas as verificações de sistema limitam o consumo a no máximo 50% de CPU, 50% de RAM e 20% de Swap, garantindo que seu computador nunca trave por falta de memória durante as checagens.
+> 🔒 **Segurança**: Todas as verificações de sistema limitam o consumo a no máximo 50% de CPU, 50% de RAM e até 60% de swap (com opção de modo econômico via `NX_LOW_MEMORY=1` para 40% CPU / 40% RAM), garantindo que seu computador nunca trave por falta de memória durante as checagens.
 
 ---
 
@@ -30,7 +30,7 @@ Em todas as tarefas abaixo, edite o arquivo `settings.nix` da sua máquina (ex: 
 |---|---|---|
 | **Hostname desconhecido** | O nome do computador em `/etc/hostname` não está listado em `hosts.nix`. | Adicione a máquina em `hosts.nix` ou crie com `./scripts/nx new-host <nome>`. |
 | **Pacote não encontrado** | O nome do programa foi digitado incorretamente em `my.apps.*`. | Procure pelo nome oficial com `./scripts/nx search <nome>` ou no site search.nixos.org. |
-| **Falta de memória no check** | O teste do repositório foi interrompido por atingir o limite de segurança. | Feche outros programas pesados ou valide apenas arquivos modificados com `statix check .`. |
+| **Falta de memória no check** | O teste do repositório foi interrompido por atingir o limite de segurança. | Feche outros programas pesados, use `NX_LOW_MEMORY=1 ./scripts/nx check` ou valide apenas arquivos modificados com `statix check .`. |
 | **Conflito de arquivos (collision)** | Um arquivo já existia em `$HOME` antes do Home Manager ser instalado. | Faça backup do arquivo existente ou aplique passando `-b backup` para renomeá-lo. |
 
 ---

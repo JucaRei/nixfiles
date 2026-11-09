@@ -47,7 +47,7 @@ let
       alias check60="nix-check-capped"
       echo "🔨 Welcome to flakes" | figlet -W | lolcat -F 0.3 -p 2.5 -S 300
       echo ">>>> ❄️ Entering Nix Development Environment"
-      echo ">>>> 💡 Execute 'nfc' para 'nix flake check --no-build' limitado a 50% de CPU e RAM."
+      echo ">>>> 💡 Execute 'nfc' para 'nix flake check --no-build' (50% de CPU, 50% de RAM e até 60% de swap; use NX_LOW_MEMORY=1 para modo econômico)."
       echo ">>>> 💡 Execute 'nix-capped <comando>' para rodar qualquer verificação dentro do limite."
     '';
   };
