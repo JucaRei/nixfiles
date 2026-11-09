@@ -1,7 +1,7 @@
 {
   desktop = {
     # Active desktop theme
-    # options: catppuccin-mocha | catppuccin-macchiato | catppuccin-frappe | catppuccin-latte | dracula | nord | gruvbox-dark | tokyo-night | kanagawa-wave | doom | solarized | rose-pine | cyberpunk
+    # options: run  ./scripts/nx themes
     theme.name = "catppuccin-mocha";
 
     # Accent color role
