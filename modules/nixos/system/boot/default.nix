@@ -162,8 +162,8 @@ in
           efiSupport = if (cfg.bootType == "efi" || cfg.bootType == "hybrid-legacy") then true else false;
           efiInstallAsRemovable = if (cfg.bootType != "legacy") then true else false;
           default = 0;
-          # Justification: Override GRUB default install device list with explicit target boot device
-          devices = lib.mkForce [ bootDevice ];
+          # Set GRUB target boot device default
+          devices = mkDefault [ bootDevice ];
           gfxmodeEfi = "auto";
           gfxmodeBios = "auto";
           extraConfig = ''

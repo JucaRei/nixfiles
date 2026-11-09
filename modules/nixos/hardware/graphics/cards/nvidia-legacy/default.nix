@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkForce;
+  inherit (lib) mkIf;
   device = config.hardware.graphics.cards;
   legacy340 = config.boot.kernelPackages.nvidia_x11_legacy340;
 in
@@ -52,7 +52,7 @@ in
       };
       xserver = {
         # Justification: Clear default videoDrivers so legacy 340 driver is loaded exclusively via drivers section
-        videoDrivers = mkForce [ ];
+        videoDrivers = lib.mkForce [ ];
         drivers = [
           {
             name = "nvidia";

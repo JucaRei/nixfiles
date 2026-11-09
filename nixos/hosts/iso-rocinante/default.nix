@@ -4,9 +4,6 @@
   config,
   ...
 }:
-let
-  inherit (lib) mkForce;
-in
 {
   config = {
     # Allow insecure broadcom-sta (CVE-2019-9501/9502) — required for BCM43xx Wi-Fi
@@ -86,7 +83,7 @@ in
       ];
 
       # Justification: Override upstream installation-cd-graphical-base.nix hardcoded true; Plymouth hangs on 8600M GT + nouveau
-      plymouth.enable = mkForce false;
+      plymouth.enable = lib.mkForce false;
 
       # Blacklist open-source Broadcom drivers that conflict with broadcom_sta (wl)
       blacklistedKernelModules = [
@@ -114,7 +111,7 @@ in
     };
 
     # Justification: Override upstream installation-cd-graphical-base.nix hardcoded true to avoid hv_vmbus probe errors on bare metal ISOs
-    virtualisation.hypervGuest.enable = mkForce false;
+    virtualisation.hypervGuest.enable = lib.mkForce false;
 
     # Enable all firmware for broadest Wi-Fi/Bluetooth/GPU compatibility
     hardware = {
@@ -139,7 +136,7 @@ in
         };
       };
       # Justification: Force-disable wpa_supplicant so NetworkManager exclusively manages wireless on live ISO.
-      wireless.enable = mkForce false;
+      wireless.enable = lib.mkForce false;
     };
 
     # --- ZRAM Swap ---

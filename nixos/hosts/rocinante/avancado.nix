@@ -5,8 +5,6 @@
   ...
 }:
 let
-  inherit (lib) mkForce;
-
   # Helper: verifica se há alguma interface Ethernet ativa (cabo conectado)
   hasActiveEthernet = pkgs.writeShellScript "has-active-ethernet" ''
     for dev in /sys/class/net/*; do
@@ -164,9 +162,9 @@ in
           system.nixos.tags = [ "nvidia-kernel-6.6" ];
           boot = {
             # Justification: Override base kernelPackages with Linux 6.6 LTS for legacy NVIDIA 340 kernel module compatibility
-            kernelPackages = mkForce pkgs.linuxPackages_6_6;
+            kernelPackages = lib.mkForce pkgs.linuxPackages_6_6;
             # Justification: Completely replace base kernel params list for legacy NVIDIA 340 driver boot.
-            kernelParams = mkForce [
+            kernelParams = lib.mkForce [
               "zswap.enabled=0"
               "mitigations=off"
               "nowatchdog"

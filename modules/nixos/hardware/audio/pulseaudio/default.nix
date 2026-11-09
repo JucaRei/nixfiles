@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (lib) mkIf mkForce;
+  inherit (lib) mkIf mkDefault;
   cfg = config.hardware.audio;
 in
 {
@@ -38,8 +38,8 @@ in
     };
 
     services.pipewire = {
-      # Justification: Force-disable Pipewire when PulseAudio backend is explicitly enabled
-      enable = mkForce false;
+      # Set Pipewire to false by default when PulseAudio backend is chosen
+      enable = mkDefault false;
       audio.enable = false;
     };
 

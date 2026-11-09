@@ -5,9 +5,6 @@
   isWorkstation,
   ...
 }:
-let
-  inherit (lib) mkForce;
-in
 {
   config = {
     # --- Generic Hardware & Drivers for all x86_64 machines ---
@@ -68,13 +65,13 @@ in
     };
 
     # Justification: Override upstream installation-cd-graphical-base.nix hardcoded true to avoid hv_vmbus probe errors on bare metal ISOs
-    virtualisation.hypervGuest.enable = mkForce false;
+    virtualisation.hypervGuest.enable = lib.mkForce false;
 
     # --- Network Management ---
     networking = {
       networkmanager.enable = true;
       # Justification: Force-disable wpa_supplicant so NetworkManager exclusively manages wireless on live ISO.
-      wireless.enable = mkForce false;
+      wireless.enable = lib.mkForce false;
     };
 
     # --- Memory & ZRAM (2x Host RAM) ---

@@ -9,7 +9,7 @@
 }:
 let
   isWorkstationISO = isISO && isWorkstation;
-  inherit (lib) mkIf mkForce optionals;
+  inherit (lib) mkIf optionals;
 in
 {
   config = {
@@ -17,7 +17,7 @@ in
 
     # All configurations for live media are below:
     # Justification: Dynamically align live media stateVersion with current evaluated nixpkgs release
-    system = mkIf isISO { stateVersion = mkForce lib.trivial.release; };
+    system = mkIf isISO { stateVersion = lib.mkForce lib.trivial.release; };
 
     environment = {
       etc = mkIf isWorkstationISO {
