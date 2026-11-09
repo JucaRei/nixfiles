@@ -360,6 +360,7 @@ watch_layouts() {
   echo "$$" > "$pid_file"
 
   cleanup() {
+    pkill -P "$$" 2>/dev/null || true
     rm -f "$pid_file" "$lock_file" 2>/dev/null || true
     exit 0
   }

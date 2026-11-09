@@ -176,7 +176,6 @@ in
     read_only_style = "fg:red bg:mauve";
     style = "fg:base bg:mauve";
     substitutions = {
-      "~" = " ~";
       "~/Development" = " ";
       "~/Documents" = "󰈙 ";
       "~/Downloads" = " ";

@@ -266,16 +266,16 @@ in
         '';
 
         reloadBspwmAutoRaise = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          if systemctl --user is-active --quiet graphical-session.target 2>/dev/null || pgrep -f bspwm >/dev/null 2>&1; then
-            systemctl --user daemon-reload 2>/dev/null || true
-            systemctl --user restart bspwm-auto-raise.service 2>/dev/null || (${autoRaiseScript} &)
+          if systemctl --user is-active --quiet graphical-session.target 2>/dev/null || ${pkgs.procps}/bin/pgrep -x bspwm >/dev/null 2>&1; then
+            $DRY_RUN_CMD systemctl --user daemon-reload 2>/dev/null || true
+            $DRY_RUN_CMD systemctl --user restart bspwm-auto-raise.service 2>/dev/null || (nohup ${autoRaiseScript} >/dev/null 2>&1 &)
           fi
         '';
 
         reloadBspLayout = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
           if systemctl --user is-active --quiet graphical-session.target 2>/dev/null || ${pkgs.procps}/bin/pgrep -x bspwm >/dev/null 2>&1; then
-            systemctl --user daemon-reload 2>/dev/null || true
-            systemctl --user restart bsp-layout.service 2>/dev/null || (${pkgs.bsp-layout}/bin/bsp-layout watch &)
+            $DRY_RUN_CMD systemctl --user daemon-reload 2>/dev/null || true
+            $DRY_RUN_CMD systemctl --user restart bsp-layout.service 2>/dev/null || (nohup ${pkgs.bsp-layout}/bin/bsp-layout watch >/dev/null 2>&1 &)
           fi
         '';
       };
