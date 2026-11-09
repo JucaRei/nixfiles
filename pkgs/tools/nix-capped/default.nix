@@ -37,7 +37,16 @@ writeShellScriptBin "nix-capped" ''
       fi
     fi
     MEM_LIMIT_BYTES="$MEM_CALCULATED_BYTES"
-    MEM_HIGH_BYTES=$(( MEM_LIMIT_BYTES * 85 / 100 ))
+    # Em hosts com pouca RAM física (< 3GB), limita a 45% da RAM ou 800MB para preservar o desktop
+    if [ "$TOTAL_MEM_KB" -lt 3145728 ]; then
+      MAX_LOWRAM_BYTES=$(( 800 * 1024 * 1024 ))
+      if [ "$MEM_LIMIT_BYTES" -gt "$MAX_LOWRAM_BYTES" ]; then
+        MEM_LIMIT_BYTES="$MAX_LOWRAM_BYTES"
+      fi
+      MEM_HIGH_BYTES=$(( MEM_LIMIT_BYTES * 90 / 100 ))
+    else
+      MEM_HIGH_BYTES=$(( MEM_LIMIT_BYTES * 85 / 100 ))
+    fi
     MEM_LIMIT_ARG="MemoryMax=''${MEM_LIMIT_BYTES}"
     MEM_HIGH_ARG="MemoryHigh=''${MEM_HIGH_BYTES}"
     MEM_HUMAN="$(( MEM_LIMIT_BYTES / 1024 / 1024 )) MB (''${RAM_PERCENT}% da RAM do host)"
@@ -51,6 +60,13 @@ writeShellScriptBin "nix-capped" ''
   TOTAL_SWAP_KB=$(awk '/SwapTotal/ {print $2}' /proc/meminfo 2>/dev/null || echo 0)
   if [ "$TOTAL_SWAP_KB" -gt 0 ]; then
     SWAP_CALCULATED_BYTES=$(( TOTAL_SWAP_KB * 1024 * SWAP_PERCENT / 100 ))
+    # Em hosts com pouca RAM física (< 3GB), limita o swap por segurança a 512MB para evitar swap thrashing
+    if [ "$TOTAL_MEM_KB" -lt 3145728 ] && [ -z "$MAX_SWAP_GB" ]; then
+      HALF_GB=$(( 512 * 1024 * 1024 ))
+      if [ "$SWAP_CALCULATED_BYTES" -gt "$HALF_GB" ]; then
+        SWAP_CALCULATED_BYTES="$HALF_GB"
+      fi
+    fi
     if [ -n "$MAX_SWAP_GB" ]; then
       MAX_SWAP_BYTES=$(( MAX_SWAP_GB * 1024 * 1024 * 1024 ))
       if [ "$SWAP_CALCULATED_BYTES" -gt "$MAX_SWAP_BYTES" ]; then
@@ -71,13 +87,42 @@ writeShellScriptBin "nix-capped" ''
   echo "    • Swap: $SWAP_HUMAN"
 
   export NIX_BUILD_CORES="$TARGET_CORES"
+  # Força avaliação serial do Nix com limite de cores para proteger a responsividade do desktop
+  if [ -n "''${NIX_CONFIG:-}" ]; then
+    export NIX_CONFIG="max-jobs = 1
+''$NIX_CONFIG"
+  else
+    export NIX_CONFIG="max-jobs = 1"
+  fi
 
   # Pass computed cores to nix commands
   if [ "$1" = "nix" ]; then
-    CMD=(nix --max-jobs "$TARGET_CORES" --cores "$TARGET_CORES" "''${@:2}")
+    CMD=(nix --max-jobs 1 --cores "$TARGET_CORES" "''${@:2}")
   else
     CMD=("$@")
   fi
+
+  # Helper para agendamento de CPU ociosa (chrt idle)
+  SCHED_PREFIX=()
+  if command -v chrt >/dev/null 2>&1 && chrt --idle 0 true >/dev/null 2>&1; then
+    SCHED_PREFIX=(chrt --idle 0)
+  fi
+
+  # Helper para prioridade de I/O ociosa (ionice idle)
+  IONICE_PREFIX=()
+  if command -v ionice >/dev/null 2>&1 && ionice -c 3 true >/dev/null 2>&1; then
+    IONICE_PREFIX=(ionice -c 3)
+  fi
+
+  # Helper para afinidade de CPU (reserva CPU 0/Core 0 100% para o desktop)
+  TASKSET_PREFIX=()
+  if command -v taskset >/dev/null 2>&1 && [ "$CORES" -gt 1 ]; then
+    CPULIST="$(( CORES - TARGET_CORES ))-$(( CORES - 1 ))"
+    TASKSET_PREFIX=(taskset -c "$CPULIST")
+  fi
+
+  # Wrapper prioritário: idle CPU + nice 19 + idle IO + afinidade de núcleos
+  WRAPPER=("''${SCHED_PREFIX[@]}" nice -n 19 "''${IONICE_PREFIX[@]}" "''${TASKSET_PREFIX[@]}")
 
   # Check controller delegation in systemd user slice
   USER_UID="''${UID:-$(id -u)}"
@@ -101,7 +146,7 @@ writeShellScriptBin "nix-capped" ''
 
   SYSTEMD_ARGS=()
   if [ "$DELEGATED_CPU" -eq 1 ]; then
-    SYSTEMD_ARGS+=(-p "CPUQuota=$CPU_QUOTA" -p "CPUWeight=50")
+    SYSTEMD_ARGS+=(-p "CPUQuota=$CPU_QUOTA" -p "CPUWeight=1" -p "IOWeight=1")
   else
     if [ "$USE_SYSTEMD" -eq 1 ]; then
       echo "⚠️ Aviso: O controlador cgroups 'cpu' não está delegado. Limite de CPU via cgroup será ignorado (usando taskset + nice)." >&2
@@ -117,21 +162,10 @@ writeShellScriptBin "nix-capped" ''
   fi
 
   if [ "$USE_SYSTEMD" -eq 1 ] && [ "''${#SYSTEMD_ARGS[@]}" -gt 0 ]; then
-    # Fallback to taskset inside systemd scope if CPU controller is missing
-    if [ "$DELEGATED_CPU" -eq 0 ] && command -v taskset >/dev/null 2>&1 && [ "$CORES" -gt 1 ]; then
-      CPULIST="0-$(( TARGET_CORES - 1 ))"
-      exec systemd-run --user --scope "''${SYSTEMD_ARGS[@]}" --quiet nice -n 15 taskset -c "$CPULIST" "''${CMD[@]}"
-    else
-      exec systemd-run --user --scope "''${SYSTEMD_ARGS[@]}" --quiet nice -n 15 "''${CMD[@]}"
-    fi
+    exec systemd-run --user --scope "''${SYSTEMD_ARGS[@]}" --quiet "''${WRAPPER[@]}" "''${CMD[@]}"
   else
     # Fallback without systemd
-    echo "⚠️ Aviso: systemd-run não disponível ou sem controladores delegados. Executando com taskset e nice. Atenção: RAM e Swap NÃO estão limitados neste modo." >&2
-    if command -v taskset >/dev/null 2>&1 && [ "$CORES" -gt 1 ]; then
-      CPULIST="0-$(( TARGET_CORES - 1 ))"
-      exec nice -n 15 taskset -c "$CPULIST" "''${CMD[@]}"
-    else
-      exec nice -n 15 "''${CMD[@]}"
-    fi
+    echo "⚠️ Aviso: systemd-run não disponível ou sem controladores delegados. Executando com taskset, nice e ionice. Atenção: RAM e Swap NÃO estão limitados neste modo." >&2
+    exec "''${WRAPPER[@]}" "''${CMD[@]}"
   fi
 ''

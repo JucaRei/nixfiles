@@ -103,8 +103,13 @@ echo "--> Extraindo Home Manager configurations..."
 mapfile -t hm_hosts < <(nix eval --raw .#homeConfigurations --apply 'cfg: builtins.concatStringsSep "\n" (builtins.attrNames cfg)')
 for host in "${hm_hosts[@]}"; do
   [ -z "$host" ] && continue
+  if [ -s "$SNAPSHOT_DIR/$host.json" ]; then
+    echo "    ✔ HM: $host (já gravado)"
+    continue
+  fi
   echo "    * HM: $host"
-  nix eval --json ".#homeConfigurations.\"$host\".config" --apply "$HM_EXPR" > "$SNAPSHOT_DIR/$host.json"
+  nix eval --json ".#homeConfigurations.\"$host\".config" --apply "$HM_EXPR" > "$SNAPSHOT_DIR/$host.json.tmp"
+  mv "$SNAPSHOT_DIR/$host.json.tmp" "$SNAPSHOT_DIR/$host.json"
 done
 
 # 2. NixOS hosts
@@ -112,8 +117,13 @@ echo "--> Extraindo NixOS configurations..."
 mapfile -t nixos_hosts < <(nix eval --raw .#nixosConfigurations --apply 'cfg: builtins.concatStringsSep "\n" (builtins.attrNames cfg)')
 for host in "${nixos_hosts[@]}"; do
   [ -z "$host" ] && continue
+  if [ -s "$SNAPSHOT_DIR/$host.json" ]; then
+    echo "    ✔ NixOS: $host (já gravado)"
+    continue
+  fi
   echo "    * NixOS: $host"
-  nix eval --json ".#nixosConfigurations.\"$host\".config" --apply "$NIXOS_EXPR" > "$SNAPSHOT_DIR/$host.json"
+  nix eval --json ".#nixosConfigurations.\"$host\".config" --apply "$NIXOS_EXPR" > "$SNAPSHOT_DIR/$host.json.tmp"
+  mv "$SNAPSHOT_DIR/$host.json.tmp" "$SNAPSHOT_DIR/$host.json"
 done
 
 echo "=== Snapshot '$LABEL' salvo em $SNAPSHOT_DIR ==="
