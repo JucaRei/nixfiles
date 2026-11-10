@@ -18,7 +18,9 @@ let
   isNixOS = osConfig != null;
   hasAntigravityApp =
     (builtins.elem "antigravity" (config.my.apps.gui or [ ]))
+    || (builtins.elem "antigravity-app" (config.my.apps.gui or [ ]))
     || (builtins.elem "antigravity" (config.my.apps.cli or [ ]))
+    || (builtins.elem "antigravity-app" (config.my.apps.cli or [ ]))
     || (cfg.app.enable or false);
 in
 {

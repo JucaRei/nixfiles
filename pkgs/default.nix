@@ -33,6 +33,8 @@ pkgs: {
   plymouth-themes = pkgs.callPackage ./system/plymouth/plymouth-themes { };
 
   # Tools
+  antigravity-app = pkgs.callPackage ./desktop/tools/antigravity-app { };
+  antigravity = pkgs.callPackage ./desktop/tools/antigravity-app { };
   bsp-layout = pkgs.callPackage ./desktop/bspwm/bsp-layout { };
   heynote = pkgs.callPackage ./desktop/tools/heynote { };
   mdhero = pkgs.callPackage ./desktop/tools/mdhero { };
