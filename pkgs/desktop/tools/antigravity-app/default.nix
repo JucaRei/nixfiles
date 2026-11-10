@@ -134,6 +134,7 @@ stdenv.mkDerivation rec {
   postFixup = ''
     makeShellWrapper $out/share/antigravity/antigravity $out/bin/antigravity \
       "''${gappsWrapperArgs[@]}" \
+      --set __HM_SHELL_EXECED 1 \
       --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}"
 
     ln -sf $out/bin/antigravity $out/bin/antigravity-app
