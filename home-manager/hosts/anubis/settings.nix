@@ -36,6 +36,7 @@
     "libva-utils"
     "intel-gpu-tools"
     "scrcpy"
+    "gpu-screen-recorder-gtk"
   ];
 
   # GUI programs to install by name

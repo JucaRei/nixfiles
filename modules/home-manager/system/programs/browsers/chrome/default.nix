@@ -39,9 +39,7 @@ in
       # Ensure Vivaldi proprietary codecs (H.264 / AAC) are fetched
       activation.setupVivaldiCodecs = lib.mkIf (cfg.version == "vivaldi") (
         lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          if [ ! -e "$HOME/.local/lib/vivaldi/media-codecs-8.1/libffmpeg.so" ]; then
-            ${pkgs.bash}/bin/bash "${config.programs.chromium.package}/opt/vivaldi/update-ffmpeg" --user || true
-          fi
+          ${pkgs.bash}/bin/bash "${config.programs.chromium.package}/opt/vivaldi/update-ffmpeg" --user || true
         ''
       );
     };
