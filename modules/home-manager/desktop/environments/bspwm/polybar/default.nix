@@ -117,5 +117,11 @@ in
         };
       };
     };
+
+    systemd.user.services.polybar = {
+      Service = {
+        TimeoutStopSec = "4s";
+      };
+    };
   };
 }

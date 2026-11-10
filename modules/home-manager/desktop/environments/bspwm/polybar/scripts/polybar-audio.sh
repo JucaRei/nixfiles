@@ -181,7 +181,13 @@ get_audio_info || true
   done
 ) &
 POLL_PID=$!
-trap 'kill "$POLL_PID" 2>/dev/null || true' EXIT INT TERM
+
+cleanup() {
+  trap - EXIT INT TERM HUP
+  [ -n "$POLL_PID" ] && kill "$POLL_PID" 2>/dev/null || true
+  exit 0
+}
+trap cleanup EXIT INT TERM HUP
 
 # 3. Escuta em tempo real através do pactl subscribe
 if command -v pactl >/dev/null 2>&1; then
@@ -193,6 +199,10 @@ if command -v pactl >/dev/null 2>&1; then
           ;;
       esac
     done || true
+    # Se pactl não conseguir se comunicar com o daemon (ex.: encerramento da sessão ou pipewire), encerra limpo
+    if ! pactl info >/dev/null 2>&1; then
+      cleanup
+    fi
     sleep 1
   done
 else
