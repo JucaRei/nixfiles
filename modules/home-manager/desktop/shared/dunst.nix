@@ -13,6 +13,10 @@ in
   options.desktop.shared.dunst = {
     enable = lib.my.mkBool false "Habilitar daemon de notificações Dunst compartilhado.";
 
+    offset = lib.my.mkStr "(9, 47)" "Offset do Dunst (horizontal, vertical) em relação ao ponto de origem da tela.";
+
+    origin = lib.my.mkStr "top-right" "Ponto de ancoragem/origem do Dunst na tela (ex: top-right, top-left, bottom-right).";
+
     reloadOnSwitch = lib.my.mkBool true "Recarregar ou reiniciar automaticamente o Dunst na ativação do Home Manager.";
   };
 
@@ -28,8 +32,8 @@ in
         global = {
           font = "Inter 10";
           corner_radius = 12;
-          origin = "top-right";
-          offset = "(16, 46)";
+          origin = cfg.origin;
+          offset = cfg.offset;
           follow = "mouse";
           width = "(260, 420)";
           height = "(50, 240)";

@@ -48,5 +48,6 @@
   # GUI programs to install by name (wrapped with nixGL)
   my.apps.gui = [
     "mdhero"
+    "antigravity"
   ];
 }
