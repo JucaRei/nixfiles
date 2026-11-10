@@ -14,10 +14,12 @@ Usuário padrão: `juca`. Idioma: comentários e docs em pt-BR; identificadores 
 |---|---|---|
 | Mudar tema, cor de destaque, wallpaper ou monitor de um host | `<home-manager\|nixos>/hosts/<host>/settings.nix` | [COMO-MEXER.md](docs/COMO-MEXER.md#receitas-do-teste-do-leigo) |
 | Instalar ou remover programas (CLI / GUI) | `<home-manager\|nixos>/hosts/<host>/settings.nix` (`my.apps.*`) | [COMO-MEXER.md](docs/COMO-MEXER.md#3-instalar-um-programa-cli-ou-gui) |
+| Validar sintaxe simples e regras dos arquivos de configuração | `./scripts/check-settings.sh` | [COMO-MEXER.md](docs/COMO-MEXER.md) |
 | Criar uma nova máquina | `./scripts/nx new-host` | [COMO-MEXER.md](docs/COMO-MEXER.md#7-criar-uma-nova-máquina-host) |
 | Registrar / alterar arquitetura, plataforma ou WM de hosts | `hosts.nix` | [hosts.nix](hosts.nix) |
 | Modificar configurações avançadas de um host | `<home-manager\|nixos>/hosts/<host>/avancado.nix` | AGENTS.md local do host |
 | Alterar perfis compartilhados de usuário ou sistema | `profiles/home/` ou `profiles/nixos/` | [profiles/](profiles/) |
+| Ajustar ponte de repasse desktop (NixOS → Home Manager) | `modules/nixos/desktop/settings-bridge.nix` | `modules/nixos/desktop/settings-bridge.nix` |
 | Adicionar novo módulo de usuário ou sistema | Criar pasta em `modules/<hm\|nixos>/.../` com `default.nix` (auto-import) | Regra 10 (Convenções Nix) |
 | Consultar tipos e opções declarativas disponíveis | `docs/OPTIONS.md` | [OPTIONS.md](docs/OPTIONS.md) |
 | Testar, aplicar ou fazer rollback de configurações | `./scripts/nx <check\|apply\|rollback>` | [COMO-MEXER.md](docs/COMO-MEXER.md#8-aplicar-as-alterações) |
@@ -32,8 +34,9 @@ Usuário padrão: `juca`. Idioma: comentários e docs em pt-BR; identificadores 
 | `lib/` | `helpers.nix`, `options.nix` (`lib.my`), `import-dir.nix`, `disk/btrfs.nix` e `nixgl/` |
 | `nixos/` | Entrada do sistema (`default.nix`), `hosts/<host>/`, `users/` |
 | `home-manager/` | Entrada do usuário (`default.nix`), `hosts/<host>/`, `users/` |
-| `modules/nixos/` | Módulos NixOS reutilizáveis (desktop, hardware, system) |
+| `modules/nixos/` | Módulos NixOS reutilizáveis (desktop, hardware, system, bridge) |
 | `modules/home-manager/` | Módulos HM reutilizáveis (`desktop/` incluindo `theme/`, `system/`) |
+| `scripts/` | Utilitários herméticos (`nx`, `nix-capped`, `check-settings.sh`, etc.) |
 | `overlays/`, `pkgs/` | Overlays e pacotes próprios |
 | `docs/OPTIONS.md` | Catálogo declarativo gerado com todas as opções `desktop.*` e `system.*` |
 
