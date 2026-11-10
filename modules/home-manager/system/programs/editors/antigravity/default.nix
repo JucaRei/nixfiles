@@ -10,10 +10,16 @@ let
   inherit (lib)
     mkIf
     mkEnableOption
+    optionalAttrs
+    optionals
     optionalString
     ;
   cfg = config.system.programs.editors.antigravity;
   isNixOS = osConfig != null;
+  hasAntigravityApp =
+    (builtins.elem "antigravity" (config.my.apps.gui or [ ]))
+    || (builtins.elem "antigravity" (config.my.apps.cli or [ ]))
+    || (cfg.app.enable or false);
 in
 {
   options = {
@@ -34,6 +40,12 @@ in
           '';
         }
       ) "Package or wrapper for Antigravity IDE.";
+      app = {
+        enable = lib.my.mkBool false "Instalar também o aplicativo Antigravity além da IDE.";
+        package = lib.my.mkPkg (
+          if isNixOS then pkgs.antigravity else nixGLWrapper pkgs.antigravity
+        ) "Pacote para o aplicativo Antigravity.";
+      };
       remoteDebuggingPort =
         lib.my.mkOpt (lib.types.nullOr (lib.types.either lib.types.port lib.types.str)) "9004"
           "Port to open Chrome DevTools Protocol (CDP) for automation (e.g. Antigravity Auto Accept).";
@@ -44,6 +56,11 @@ in
     home = {
       packages = [
         cfg.package
+        pkgs.direnv
+        pkgs.nix-direnv
+        pkgs.nerd-fonts.victor-mono
+      ]
+      ++ optionals (!hasAntigravityApp) [
         (pkgs.writeShellScriptBin "antigravity" ''
           export NODE_TLS_REJECT_UNAUTHORIZED=0
           exec antigravity-ide ${
@@ -52,9 +69,9 @@ in
             ) "--remote-debugging-port=${toString cfg.remoteDebuggingPort}"
           } "$@"
         '')
-        pkgs.direnv
-        pkgs.nix-direnv
-        pkgs.nerd-fonts.victor-mono
+      ]
+      ++ optionals (cfg.app.enable && !(builtins.elem "antigravity" (config.my.apps.gui or [ ]))) [
+        cfg.app.package
       ];
 
       activation.configureAntigravityCdp = mkIf (cfg.remoteDebuggingPort != null) (
@@ -128,8 +145,9 @@ in
           };
         };
       };
-
-      # Esconde qualquer entrada legada 'antigravity.desktop' para prevenir duplicata no Rofi
+    }
+    // optionalAttrs (!hasAntigravityApp) {
+      # Esconde qualquer entrada legada 'antigravity.desktop' apenas quando o aplicativo oficial antigravity não está instalado
       antigravity = {
         name = "Antigravity IDE (Legacy)";
         exec = "true";
