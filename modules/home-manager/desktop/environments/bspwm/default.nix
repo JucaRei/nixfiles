@@ -29,7 +29,8 @@
 
     dconf.settings = {
       "org/blueman/general" = {
-        notification-daemon = true;
+        # Use native GTK dialogs for pairing and connection authorization
+        notification-daemon = false;
         plugin-list = [ "!StatusIcon" ];
       };
     };
