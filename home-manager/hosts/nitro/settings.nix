@@ -49,5 +49,6 @@
   my.apps.gui = [
     "mdhero"
     "antigravity-app"
+    "rustdesk"
   ];
 }
