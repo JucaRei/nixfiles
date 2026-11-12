@@ -15,7 +15,7 @@ Configuração Home Manager standalone para o Acer Nitro 5 rodando Debian.
 - **NVIDIA Modeset (Gotcha Crítico)**: **NUNCA** ativar `nvidia-drm.modeset=1` no kernel/GRUB/modprobe do Debian. Quando o KMS é ativado na NVIDIA no Debian, o Xorg carrega o `libglxserver_nvidia` que quebra o GLX do Mesa/Intel com o erro `failed to find suitable GL configuration`. Manter `modeset=0`.
 - **Wi-Fi**: Chipset Intel AC 9560 configurado com backend `iwd` no NetworkManager.
 - **BSPWM Multi-Monitor**: Workspaces ímpares (1, 3, 5, 7, 9) na tela primária, pares (2, 4, 6, 8, 0) na secundária.
-- **Bluetooth e Diálogos**: Auto-trust no startup do BSPWM para dispositivos pareados, `org/blueman/general.notification-daemon = false` para exibir diálogos nativos do GTK com opções interativas de autorização e pareamento.
+- **Bluetooth e Diálogos**: Auto-trust no startup do BSPWM para dispositivos pareados, `org/blueman/general.notification-daemon = true` para enviar avisos de conexão/desconexão ao Dunst (evitando janelas GTK presas na tela) com fallback automático caso sejam necessárias ações interativas.
 
 ## Como prosseguir
 

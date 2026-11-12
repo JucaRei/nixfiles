@@ -29,8 +29,8 @@
 
     dconf.settings = {
       "org/blueman/general" = {
-        # Use native GTK dialogs for pairing and connection authorization
-        notification-daemon = false;
+        # Usar o daemon de notificações (Dunst) para alertas normais com auto-dismiss
+        notification-daemon = true;
         plugin-list = [ "!StatusIcon" ];
       };
     };
