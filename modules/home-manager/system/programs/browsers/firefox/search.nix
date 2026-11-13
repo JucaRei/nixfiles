@@ -131,7 +131,7 @@
           ];
         }
       ];
-      icon = "${pkgs.brave}/share/icons/hicolor/64x64/apps/brave-browser.png";
+      icon = "${pkgs.papirus-icon-theme}/share/icons/Papirus/64x64/apps/brave-browser.svg";
       definedAliases = [
         "@brave"
         "@br"
