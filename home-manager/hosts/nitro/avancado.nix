@@ -28,13 +28,13 @@
         packages = [
           (
             let
-              sha256 = "fbcf116fb905c556f4b8665cf4ad0f0a63339e6520d0d12dc5fba31357d8a887";
+              sha256 = "b0df008a450c061b2a92dd96087b7827792c08d5d015e6cf47b73eebb737482e";
             in
             {
               appId = "io.github.karem505.whatRust";
               inherit sha256;
               bundle = "${pkgs.fetchurl {
-                url = "https://github.com/karem505/whatRust/releases/download/v0.6.7/whatRust_x86_64.flatpak";
+                url = "https://github.com/karem505/whatRust/releases/download/v0.6.16/whatRust_x86_64.flatpak";
                 inherit sha256;
               }}";
             }

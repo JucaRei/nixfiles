@@ -76,5 +76,16 @@ in
       "${config.home.homeDirectory}/.local/share/flatpak/exports/bin"
       "/var/lib/flatpak/exports/bin"
     ];
+
+    # Garante que os serviços de usuário do Flatpak (portais e session helpers)
+    # fiquem visíveis para o systemd --user em sistemas hospedeiros não-NixOS
+    xdg.dataFile = {
+      "systemd/user/flatpak-portal.service".source =
+        "${pkgs.flatpak}/share/systemd/user/flatpak-portal.service";
+      "systemd/user/flatpak-session-helper.service".source =
+        "${pkgs.flatpak}/share/systemd/user/flatpak-session-helper.service";
+      "systemd/user/flatpak-oci-authenticator.service".source =
+        "${pkgs.flatpak}/share/systemd/user/flatpak-oci-authenticator.service";
+    };
   };
 }
