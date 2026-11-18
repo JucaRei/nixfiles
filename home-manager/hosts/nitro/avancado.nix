@@ -41,6 +41,13 @@
           )
           "com.mikrotik.WinBox"
         ];
+        overrides = {
+          "io.github.karem505.whatRust" = {
+            Environment = {
+              WEBKIT_DISABLE_DMABUF_RENDERER = "1";
+            };
+          };
+        };
       };
     };
 
