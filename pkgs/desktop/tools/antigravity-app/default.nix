@@ -41,12 +41,12 @@
 
 stdenv.mkDerivation rec {
   pname = "antigravity-app";
-  version = "2.31.2";
-  buildId = "6470801290035200";
+  version = "2.33.0";
+  buildId = "4731201358004224";
 
   src = fetchurl {
     url = "https://storage.googleapis.com/antigravity-public/antigravity-hub/${version}-${buildId}/linux-x64/Antigravity.tar.gz";
-    hash = "sha256-IL48qyGirrqdyj7umiEvAwjPNLIvtKipiw3t8Y7mNBM=";
+    hash = "sha256-pzOHsinGsfUoiGBzETPFsm4VM0Dq7ZbYZQMs2KhTUFA=";
   };
 
   sourceRoot = "Antigravity-x64";
