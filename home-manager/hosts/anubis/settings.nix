@@ -40,7 +40,7 @@
   ];
 
   # GUI programs to install by name
-  my.apps.gui = [ ];
+  my.apps.gui = [ "antigravity-app" ];
 
   system.programs = {
     browsers = {
