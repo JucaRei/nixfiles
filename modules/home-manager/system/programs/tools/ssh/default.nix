@@ -32,7 +32,24 @@ let
   legacySsh = legacyPkgs.openssh;
 
   sshLegacy = pkgs.writeShellScriptBin "ssh-legacy" ''
+    configArg=()
+    hasConfig=0
+    for arg in "$@"; do
+      if [ "$arg" = "-F" ]; then
+        hasConfig=1
+        break
+      fi
+    done
+    if [ "$hasConfig" -eq 0 ]; then
+      if [ -f "''${HOME}/.ssh/config" ]; then
+        configArg=(-F "''${HOME}/.ssh/config")
+      else
+        configArg=(-F /dev/null)
+      fi
+    fi
+
     exec ${legacySsh}/bin/ssh \
+      "''${configArg[@]}" \
       -oHostKeyAlgorithms=+ssh-dss \
       -oKexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1 \
       -oPubkeyAcceptedAlgorithms=+ssh-dss \
@@ -43,7 +60,24 @@ let
   '';
 
   scpLegacy = pkgs.writeShellScriptBin "scp-legacy" ''
+    configArg=()
+    hasConfig=0
+    for arg in "$@"; do
+      if [ "$arg" = "-F" ]; then
+        hasConfig=1
+        break
+      fi
+    done
+    if [ "$hasConfig" -eq 0 ]; then
+      if [ -f "''${HOME}/.ssh/config" ]; then
+        configArg=(-F "''${HOME}/.ssh/config")
+      else
+        configArg=(-F /dev/null)
+      fi
+    fi
+
     exec ${legacySsh}/bin/scp \
+      "''${configArg[@]}" \
       -oHostKeyAlgorithms=+ssh-dss \
       -oKexAlgorithms=+diffie-hellman-group1-sha1,diffie-hellman-group14-sha1 \
       -oPubkeyAcceptedAlgorithms=+ssh-dss \

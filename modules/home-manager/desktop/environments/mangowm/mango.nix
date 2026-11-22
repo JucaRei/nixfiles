@@ -82,44 +82,38 @@ let
     if [ -n "$dev" ]; then
       case "$1" in
         up)
-          prev=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
-          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +2% >/dev/null 2>&1
-          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
-          if [ "$prev" = "$curr" ]; then
-            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set +1 >/dev/null 2>&1
-          fi
+          ${pkgs.brightnessctl}/bin/brightnessctl -q -d "$dev" set +10% || ${pkgs.brightnessctl}/bin/brightnessctl -q -d "$dev" set +1
           ;;
         down)
-          prev=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
-          ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 2%- >/dev/null 2>&1
-          curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" get 2>/dev/null)
-          if [ "$prev" = "$curr" ]; then
-            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 1- >/dev/null 2>&1
-          fi
+          ${pkgs.brightnessctl}/bin/brightnessctl -q -d "$dev" set 10%- || ${pkgs.brightnessctl}/bin/brightnessctl -q -d "$dev" set 1-
           ;;
         toggle)
           curr=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
           if [ "$curr" -gt 0 ] 2>/dev/null; then
-            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 0%
+            ${pkgs.brightnessctl}/bin/brightnessctl -q -d "$dev" set 0%
           else
-            ${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" set 50%
+            ${pkgs.brightnessctl}/bin/brightnessctl -q -d "$dev" set 50%
           fi
           ;;
       esac
 
       val=$(${pkgs.brightnessctl}/bin/brightnessctl -d "$dev" -m 2>/dev/null | cut -d, -f4 | tr -d '%' | head -n1)
       if [ -n "$val" ]; then
-        notif_file="/tmp/mango_kbd_notif_id"
-        last_id=0
-        if [ -f "$notif_file" ]; then
-          last_id=$(cat "$notif_file" 2>/dev/null || echo 0)
-        fi
-        case "$last_id" in
-          '''|*[!0-9]*) last_id=0 ;;
-        esac
-        new_id=$(${pkgs.libnotify}/bin/notify-send -p -r "$last_id" -a "OSD" -u low -i "input-keyboard" -h int:value:"$val" -t 1200 "Luz do Teclado: $val%")
-        if [ -n "$new_id" ]; then
-          echo "$new_id" > "$notif_file"
+        if noctalia msg keyboard-backlight-osd "$val" >/dev/null 2>&1 || ${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-osd "$val" >/dev/null 2>&1; then
+          :
+        else
+          notif_file="/tmp/mango_kbd_notif_id"
+          last_id=0
+          if [ -f "$notif_file" ]; then
+            last_id=$(cat "$notif_file" 2>/dev/null || echo 0)
+          fi
+          case "$last_id" in
+            '''|*[!0-9]*) last_id=0 ;;
+          esac
+          new_id=$(${pkgs.libnotify}/bin/notify-send -p -r "$last_id" -a "OSD" -u low -i "input-keyboard" -h int:value:"$val" -t 1200 "Luz do Teclado: $val%")
+          if [ -n "$new_id" ]; then
+            echo "$new_id" > "$notif_file"
+          fi
         fi
       fi
     else

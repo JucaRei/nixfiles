@@ -228,13 +228,17 @@
         bind=NONE,XF86MonBrightnessUp,spawn,${pkgs.noctalia}/bin/noctalia msg brightness-up
         bind=NONE,XF86MonBrightnessDown,spawn,${pkgs.noctalia}/bin/noctalia msg brightness-down
 
-        # Iluminação do Teclado (Feedback OSD Nativo do Noctalia)
-        bind=NONE,XF86KbdBrightnessUp,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-up
-        bind=NONE,XF86KbdBrightnessDown,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-down
-        bind=NONE,XF86KbdLightOnOff,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-toggle
-        bind=${mod},F6,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-up
-        bind=${mod},F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-down
-        bind=${mod}+SHIFT,F5,spawn,${pkgs.noctalia}/bin/noctalia msg keyboard-backlight-toggle
+        # Iluminação do Teclado (MacBook F5/F6 e Logitech MX Keys F3/F4)
+        bind=NONE,XF86KbdBrightnessUp,spawn,${kbdBrightnessOsd} up
+        bind=NONE,XF86KbdBrightnessDown,spawn,${kbdBrightnessOsd} down
+        bind=NONE,XF86KbdLightOnOff,spawn,${kbdBrightnessOsd} toggle
+        bind=${mod},F6,spawn,${kbdBrightnessOsd} up
+        bind=${mod},F5,spawn,${kbdBrightnessOsd} down
+        bind=${mod}+SHIFT,F5,spawn,${kbdBrightnessOsd} toggle
+        bind=${mod},F4,spawn,${kbdBrightnessOsd} up
+        bind=${mod},F3,spawn,${kbdBrightnessOsd} down
+        bind=${mod}+SHIFT,F4,spawn,${kbdBrightnessOsd} toggle
+        bind=${mod}+SHIFT,F3,spawn,${kbdBrightnessOsd} toggle
 
         # Captura de Tela (Screenshots via Noctalia IPC)
         ${
