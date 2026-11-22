@@ -84,6 +84,19 @@
   "${mod} + u" = "${scratchpadScript}";
 
   # =========================================================================
+  # CONTROLE DE NOTIFICAÇÕES (DUNST)
+  # =========================================================================
+  # Super + N ou Super + Shift + Espaço: fecha a notificação ativa imediatamente
+  "${mod} + n" = "${pkgs.dunst}/bin/dunstctl close";
+  "${mod} + shift + space" = "${pkgs.dunst}/bin/dunstctl close";
+  # Super + Shift + N: fecha todas as notificações na tela
+  "${mod} + shift + n" = "${pkgs.dunst}/bin/dunstctl close-all";
+  # Super + Alt + N: reabre a última notificação fechada (histórico)
+  "${mod} + alt + n" = "${pkgs.dunst}/bin/dunstctl history-pop";
+  # Super + Ctrl + N: menu de contexto/ações da notificação ativa
+  "${mod} + ctrl + n" = "${pkgs.dunst}/bin/dunstctl context";
+
+  # =========================================================================
   # GERENCIAMENTO DE JANELAS (FECHAMENTO E ENCERRAMENTO)
   # =========================================================================
   # Super + Q: fecha a janela ativa normalmente (sinal de fechamento suave)

@@ -58,7 +58,7 @@ let
       for bin in ${thunar-with-plugins}/bin/*; do
         if [ -x "$bin" ]; then
           makeWrapper "$bin" "$out/bin/$(basename "$bin")" \
-            --prefix GIO_EXTRA_MODULES : "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules" \
+            --prefix GIO_EXTRA_MODULES : "${pkgs.gvfs}/lib/gio/modules:/usr/lib/x86_64-linux-gnu/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules" \
             --prefix XDG_DATA_DIRS : "$out/share:${thunar-with-plugins}/share:${pkgs.gvfs}/share:${pkgs.tumbler}/share:${pkgs.xfconf}/share:${pkgs.shared-mime-info}/share:${themeDataDir}${iconDataDir}${config.home.homeDirectory}/.local/share:${config.home.homeDirectory}/.nix-profile/share:/usr/local/share:/usr/share" \
             --set-default GTK_APPLICATION_PREFER_DARK_THEME "${if isDark then "1" else "0"}" \
             --run '

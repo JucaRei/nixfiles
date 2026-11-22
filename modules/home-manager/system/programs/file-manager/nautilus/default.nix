@@ -32,7 +32,7 @@ let
       for bin in ${cfg.package}/bin/*; do
         if [ -x "$bin" ]; then
           makeWrapper "$bin" "$out/bin/$(basename "$bin")" \
-            --prefix GIO_EXTRA_MODULES : "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules" \
+            --prefix GIO_EXTRA_MODULES : "${pkgs.gvfs}/lib/gio/modules:/usr/lib/x86_64-linux-gnu/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules" \
             --prefix XDG_DATA_DIRS : "${pkgs.gvfs}/share:${pkgs.gsettings-desktop-schemas}/share:${pkgs.nautilus}/share:${pkgs.sushi}/share:${pkgs.nautilus-open-any-terminal}/share:${pkgs.tumbler}/share:${pkgs.shared-mime-info}/share:/usr/share" \
             --prefix NAUTILUS_4_EXTENSION_DIR : "${pkgs.nautilus-python}/lib/nautilus/extensions-4"
         fi

@@ -63,6 +63,11 @@ in
           frame_color = c.accent;
           separator_color = "frame";
           highlight = c.accent;
+
+          # Comportamento de clique do mouse
+          mouse_left_click = "close_current";
+          mouse_middle_click = "do_action, close_current";
+          mouse_right_click = "close_all";
         };
 
         urgency_low = {
@@ -87,25 +92,26 @@ in
         };
 
         # Regras com timer automático para Bluetooth e Blueman
-        bluetooth = {
-          appname = "*[Bb]luetooth*";
-          override_dbus_timeout = true;
-          timeout = 4;
-        };
-
-        blueman = {
+        # O prefixo 'zz_' garante que as seções fiquem depois de 'urgency_*' no dunstrc ordenado pelo Home Manager
+        zz_blueman = {
           appname = "*[Bb]lueman*";
           override_dbus_timeout = true;
           timeout = 4;
         };
 
-        bluetooth_stack = {
+        zz_bluetooth = {
+          appname = "*[Bb]luetooth*";
+          override_dbus_timeout = true;
+          timeout = 4;
+        };
+
+        zz_bluetooth_stack = {
           stack_tag = "bluetooth-osd";
           override_dbus_timeout = true;
           timeout = 4;
         };
 
-        bluetooth_summary = {
+        zz_bluetooth_summary = {
           summary = "*[Bb]luetooth*";
           override_dbus_timeout = true;
           timeout = 4;

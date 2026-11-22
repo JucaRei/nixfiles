@@ -165,7 +165,7 @@ in
     (mkIf anyFMEnabled {
       home = {
         sessionVariables = {
-          GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules\${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}";
+          GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules:/usr/lib/x86_64-linux-gnu/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules\${GIO_EXTRA_MODULES:+:$GIO_EXTRA_MODULES}";
         };
 
         # Modelos padrão para o menu "Criar Documento" / "Novo Documento"
@@ -223,7 +223,7 @@ in
           Restart = "on-failure";
           RestartSec = 3;
           Environment = [
-            "GIO_EXTRA_MODULES=${pkgs.gvfs}/lib/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules"
+            "GIO_EXTRA_MODULES=${pkgs.gvfs}/lib/gio/modules:/usr/lib/x86_64-linux-gnu/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules"
             "XDG_DATA_DIRS=${pkgs.tumbler}/share:${pkgs.shared-mime-info}/share:${pkgs.gdk-pixbuf}/share:/usr/local/share:/usr/share"
           ];
         };

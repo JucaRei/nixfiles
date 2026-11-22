@@ -170,6 +170,7 @@ in
         "d ${config.home.homeDirectory}/Pictures/Resources 0755 - - - -"
         "d ${config.home.homeDirectory}/.dotfiles 0755 - - - -"
         "d ${config.home.homeDirectory}/.config/home-manager 0755 - - - -"
+        "L+ %h/Shares - - - - %t/gvfs"
       ];
     };
 
@@ -188,6 +189,7 @@ in
           "file://${config.home.homeDirectory}/Videos"
           "file://${config.home.homeDirectory}/Documents/workspace/lab"
           "file://${config.home.homeDirectory}/Misc"
+          "file://${config.home.homeDirectory}/Shares Shares (Samba)"
           "smb://sharecenter.home.lan/volume_1 hd400gb"
           "smb://sharecenter.home.lan/volume_2/Transmission/Volume_2 h2tb"
           "smb://share.home.lan/500gb 500gb"

@@ -201,5 +201,13 @@ in
         "xdg-desktop-portal/portals.conf".text = portalConf;
       };
     };
+
+    systemd.user.services.xdg-desktop-portal-gtk = {
+      Service = {
+        Environment = [
+          "GIO_EXTRA_MODULES=${pkgs.gvfs}/lib/gio/modules:/usr/lib/x86_64-linux-gnu/gio/modules:/usr/lib64/gio/modules:/usr/lib/gio/modules"
+        ];
+      };
+    };
   };
 }
