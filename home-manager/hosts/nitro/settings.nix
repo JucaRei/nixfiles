@@ -50,5 +50,6 @@
     "mdhero"
     "antigravity-app"
     "rustdesk"
+    "obsidian"
   ];
 }
