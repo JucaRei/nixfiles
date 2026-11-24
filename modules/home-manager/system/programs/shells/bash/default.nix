@@ -162,7 +162,7 @@ in
         enable = true;
         profileExtra = ''
           # Redirecionamento automático de login/SSH para o shell padrão (${cfg.default})
-          if [[ $- == *i* ]] && [[ $- != *c* ]] && [ -t 0 ] && [ -z "''${__HM_SHELL_EXECED-}" ] && [ -z "''${ZSH_VERSION-}" ] && [ -z "''${FISH_VERSION-}" ] && [ -z "''${NU_VERSION-}" ]; then
+          if [[ $- == *i* ]] && [[ $- != *c* ]] && [ -t 0 ] && [ -z "''${IN_NIX_SHELL-}" ] && [ -z "''${NIX_BUILD_TOP-}" ] && [ -z "''${__HM_SHELL_EXECED-}" ] && [ -z "''${ZSH_VERSION-}" ] && [ -z "''${FISH_VERSION-}" ] && [ -z "''${NU_VERSION-}" ]; then
             export __HM_SHELL_EXECED=1
             if [ -x "${targetShellPkg}" ]; then
               exec "${targetShellPkg}" -l
@@ -173,7 +173,7 @@ in
         '';
         initExtra = ''
           # Redirecionamento automático para sessões interativas que não sejam de login
-          if [[ $- == *i* ]] && [[ $- != *c* ]] && [ -t 0 ] && [ -z "''${__HM_SHELL_EXECED-}" ] && [ -z "''${ZSH_VERSION-}" ] && [ -z "''${FISH_VERSION-}" ] && [ -z "''${NU_VERSION-}" ]; then
+          if [[ $- == *i* ]] && [[ $- != *c* ]] && [ -t 0 ] && [ -z "''${IN_NIX_SHELL-}" ] && [ -z "''${NIX_BUILD_TOP-}" ] && [ -z "''${__HM_SHELL_EXECED-}" ] && [ -z "''${ZSH_VERSION-}" ] && [ -z "''${FISH_VERSION-}" ] && [ -z "''${NU_VERSION-}" ]; then
             export __HM_SHELL_EXECED=1
             if [ -x "${targetShellPkg}" ]; then
               exec "${targetShellPkg}" -l
