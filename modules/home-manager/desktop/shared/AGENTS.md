@@ -13,8 +13,8 @@ Localizado em `modules/home-manager/desktop/shared/`. Agrupa Rofi, Dunst e confi
   - Submenu de redes Wi-Fi e Ethernet (`rofi-wifi-menu` / `bspwm-wifi`): suporte a perfis cabeados com reload via `nmcli connection reload` e submenus detalhados por SSID com expurgo e confirmação.
   - Cuidados no parsing do `nmcli -t`: nunca incluir `BSSID` antes do SSID fatiado com `IFS=:`. O campo `SSID` deve ser o último.
 - **Dunst (Notificações)**:
-  - Configuração com `mouse_left_click = "close_current"` (clique com botão esquerdo fecha imediatamente a notificação) e `mouse_middle_click = "do_action, close_current"`.
-  - Integração Bluetooth/Blueman: regras específicas com prefixo `zz_` (para garantir ordenação após `urgency_*` no `dunstrc`), `override_dbus_timeout = true` e `timeout = 4` segundos para evitar janelas presas na tela.
+  - Configuração com `mouse_left_click = "context, close_current"` (clique com botão esquerdo aciona menu de contexto/ações se houver, ou fecha a notificação) e `mouse_middle_click = "do_action, close_current"`.
+  - Integração Bluetooth/Blueman: regras específicas com prefixo `zz_` (para garantir ordenação após `urgency_*` no `dunstrc`), `override_dbus_timeout = true` e `timeout = 4` segundos para alertas rotineiros, exceto autenticações/autorizações sob `zzz_bluetooth_auth` que mantêm `timeout = 0`.
 - **Tecla Modificadora Universal**: `desktop.modifierKey` (`"Super"`, `"Alt"`, `"Ctrl"`). Inverte o secundário quando `mod == "Alt"`.
 - **Módulo de Monitores**: `desktop.monitors` gera regras declarativas para X11, Wayland, Kanshi e DEs.
 

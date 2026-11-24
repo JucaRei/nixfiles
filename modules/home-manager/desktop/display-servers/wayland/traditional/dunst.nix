@@ -65,7 +65,8 @@ in
           highlight = c.accent;
 
           # Comportamento de clique do mouse
-          mouse_left_click = "close_current";
+          dmenu = "${pkgs.rofi}/bin/rofi -dmenu -p dunst:";
+          mouse_left_click = "context, close_current";
           mouse_middle_click = "do_action, close_current";
           mouse_right_click = "close_all";
         };
@@ -115,6 +116,14 @@ in
           summary = "*[Bb]luetooth*";
           override_dbus_timeout = true;
           timeout = 4;
+        };
+
+        # Notificações críticas de autenticação, pareamento e autorização Bluetooth não devem ter auto-dismiss
+        zzz_bluetooth_auth = {
+          summary = "*[Aa]uthenticat*|*[Aa]utentica*|*[Aa]uthoriz*|*[Aa]utoriza*|*[Pp]air*|*[Pp]area*";
+          override_dbus_timeout = false;
+          timeout = 0;
+          urgency = "critical";
         };
       };
     };

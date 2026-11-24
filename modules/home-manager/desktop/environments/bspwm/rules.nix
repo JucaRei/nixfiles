@@ -87,6 +87,21 @@ in
         center = true;
         follow = true;
       };
+      "blueman-manager" = {
+        state = "floating";
+        center = true;
+        follow = true;
+      };
+      "Blueman-applet" = {
+        state = "floating";
+        center = true;
+        follow = true;
+      };
+      "blueman-applet" = {
+        state = "floating";
+        center = true;
+        follow = true;
+      };
       "Blueman-adapters" = {
         state = "floating";
         center = true;

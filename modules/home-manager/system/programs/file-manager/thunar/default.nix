@@ -90,6 +90,8 @@ in
       rememberViewSettings = lib.my.mkBool true "Relembrar configurações de exibição específicas para cada pasta no Thunar (misc-directory-specific-settings).";
 
       restoreTabs = lib.my.mkBool true "Restaurar abas abertas anteriormente ao iniciar o Thunar (last-restore-tabs).";
+
+      volumeManagement = lib.my.mkBool true "Habilitar gerenciamento automático de volumes e montagem de dispositivos removíveis (thunar-volman).";
     };
   };
 
@@ -100,29 +102,56 @@ in
         Name=org.xfce.Xfconf
         Exec=${pkgs.xfconf}/lib/xfce4/xfconf/xfconfd
       '';
+      "dbus-1/services/org.xfce.FileManager.service".text = ''
+        [D-BUS Service]
+        Name=org.xfce.FileManager
+        Exec=${thunar-wrapped}/bin/thunar --gapplication-service
+        SystemdService=thunar.service
+      '';
+      "dbus-1/services/org.xfce.Thunar.service".text = ''
+        [D-BUS Service]
+        Name=org.xfce.Thunar
+        Exec=${thunar-wrapped}/bin/thunar --gapplication-service
+        SystemdService=thunar.service
+      '';
     };
 
     systemd.user = mkIf pkgs.stdenv.isLinux {
-      services.xfconfd = {
-        Unit = {
-          Description = "Xfce Configuration Daemon";
-          PartOf = [ "graphical-session.target" ];
+      services = {
+        xfconfd = {
+          Unit = {
+            Description = "Xfce Configuration Daemon";
+            PartOf = [ "graphical-session.target" ];
+          };
+          Service = {
+            Type = "dbus";
+            BusName = "org.xfce.Xfconf";
+            ExecStart = "${pkgs.xfconf}/lib/xfce4/xfconf/xfconfd";
+            Restart = "on-failure";
+            RestartSec = 3;
+            Environment = [
+              "XDG_DATA_DIRS=${pkgs.xfconf}/share:/usr/local/share:/usr/share"
+            ];
+          };
+          Install = {
+            WantedBy = [
+              "graphical-session.target"
+              "default.target"
+            ];
+          };
         };
-        Service = {
-          Type = "dbus";
-          BusName = "org.xfce.Xfconf";
-          ExecStart = "${pkgs.xfconf}/lib/xfce4/xfconf/xfconfd";
-          Restart = "on-failure";
-          RestartSec = 3;
-          Environment = [
-            "XDG_DATA_DIRS=${pkgs.xfconf}/share:/usr/local/share:/usr/share"
-          ];
-        };
-        Install = {
-          WantedBy = [
-            "graphical-session.target"
-            "default.target"
-          ];
+
+        thunar = {
+          Unit = {
+            Description = "Thunar file manager";
+            Documentation = [ "man:Thunar(1)" ];
+          };
+          Service = {
+            Type = "dbus";
+            BusName = "org.xfce.FileManager";
+            ExecStart = "${thunar-wrapped}/bin/thunar --daemon";
+            KillMode = "process";
+          };
         };
       };
     };
@@ -168,26 +197,6 @@ in
                 tree = ET.ElementTree(root)
             return tree, root, xml_file
 
-        # Canal thunar.xml
-        t_tree, t_root, t_file = load_or_create("thunar")
-        t_settings = {
-            "misc-directory-specific-settings": "${if cfg.rememberViewSettings then "true" else "false"}",
-            "last-restore-tabs": "${if cfg.restoreTabs then "true" else "false"}",
-        }
-        for name, val in t_settings.items():
-            prop = t_root.find(f"./property[@name=\"{name}\"]")
-            if prop is None:
-                ET.SubElement(t_root, "property", attrib={"name": name, "type": "bool", "value": val})
-            else:
-                prop.set("type", "bool")
-                prop.set("value", val)
-
-        if hasattr(ET, "indent"):
-            ET.indent(t_tree, space="  ", level=0)
-        t_tree.write(t_file, encoding="UTF-8", xml_declaration=True)
-
-        # Canal xsettings.xml (Tema GTK, ícones, cursor e fonte para apps XFCE como Thunar)
-        x_tree, x_root, x_file = load_or_create("xsettings")
         def set_nested(root_node, path, ptype, pvalue):
             parts = path.strip("/").split("/")
             curr = root_node
@@ -207,6 +216,42 @@ in
                         node.set("type", ptype)
                         node.set("value", str(pvalue))
                 curr = node
+
+        # Canal thunar.xml
+        t_tree, t_root, t_file = load_or_create("thunar")
+        t_settings = {
+            "misc-directory-specific-settings": "${if cfg.rememberViewSettings then "true" else "false"}",
+            "last-restore-tabs": "${if cfg.restoreTabs then "true" else "false"}",
+            "misc-volume-management": "${if cfg.volumeManagement then "true" else "false"}",
+        }
+        for name, val in t_settings.items():
+            prop = t_root.find(f"./property[@name=\"{name}\"]")
+            if prop is None:
+                ET.SubElement(t_root, "property", attrib={"name": name, "type": "bool", "value": val})
+            else:
+                prop.set("type", "bool")
+                prop.set("value", val)
+
+        if hasattr(ET, "indent"):
+            ET.indent(t_tree, space="  ", level=0)
+        t_tree.write(t_file, encoding="UTF-8", xml_declaration=True)
+
+        # Canal thunar-volman.xml
+        v_tree, v_root, v_file = load_or_create("thunar-volman")
+        v_settings = {
+            "automount-media/enabled": "${if cfg.volumeManagement then "true" else "false"}",
+            "automount-drives/enabled": "${if cfg.volumeManagement then "true" else "false"}",
+            "autobrowse/enabled": "${if cfg.volumeManagement then "true" else "false"}",
+        }
+        for path, val in v_settings.items():
+            set_nested(v_root, path, "bool", val)
+
+        if hasattr(ET, "indent"):
+            ET.indent(v_tree, space="  ", level=0)
+        v_tree.write(v_file, encoding="UTF-8", xml_declaration=True)
+
+        # Canal xsettings.xml (Tema GTK, ícones, cursor e fonte para apps XFCE como Thunar)
+        x_tree, x_root, x_file = load_or_create("xsettings")
 
         theme_name = "${themeName}"
         icon_name = "${
@@ -251,6 +296,18 @@ in
                 } 2>/dev/null || true
                 $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /last-restore-tabs -n -t bool -s ${
                   if cfg.restoreTabs then "true" else "false"
+                } 2>/dev/null || true
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar -p /misc-volume-management -n -t bool -s ${
+                  if cfg.volumeManagement then "true" else "false"
+                } 2>/dev/null || true
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar-volman -p /automount-media/enabled -n -t bool -s ${
+                  if cfg.volumeManagement then "true" else "false"
+                } 2>/dev/null || true
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar-volman -p /automount-drives/enabled -n -t bool -s ${
+                  if cfg.volumeManagement then "true" else "false"
+                } 2>/dev/null || true
+                $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c thunar-volman -p /autobrowse/enabled -n -t bool -s ${
+                  if cfg.volumeManagement then "true" else "false"
                 } 2>/dev/null || true
                 ${lib.optionalString (themeName != "") ''
                   $DRY_RUN_CMD ${pkgs.xfconf}/bin/xfconf-query -c xsettings -p /Net/ThemeName -n -t string -s "${themeName}" 2>/dev/null || true
