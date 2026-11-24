@@ -7,6 +7,10 @@
 }:
 {
   config = {
+    nixpkgs.config.permittedInsecurePackages = [
+      "electron-42.11.18"
+    ];
+
     desktop.bspwm.extraKeybindings = {
       "ctrl + shift + t" = "bspc node -t '~floating'";
     };
