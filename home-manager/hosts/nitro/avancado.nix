@@ -25,10 +25,10 @@
         };
 
         editors = {
-	  antigravity.enable = false;
+	  antigravity.enable = true;
 	  vscode = {
-	    enable = true;
-	    enableConfigurableSettings = true;	    
+	    enable = false;
+	    enableConfigurableSettings = false;	    
 	  }; 
 	};
       };
