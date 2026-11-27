@@ -49,7 +49,8 @@
   my.apps.gui = [
     "mdhero"
     "antigravity-app"
-    "opencode-desktop"
+    #"opencode-desktop"
+    #"codex"
     "rustdesk"
     "obsidian"
   ];

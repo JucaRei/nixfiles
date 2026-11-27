@@ -24,7 +24,13 @@
           defaultNvidia = true;
         };
 
-        editors.antigravity.enable = true;
+        editors = {
+	  antigravity.enable = false;
+	  vscode = {
+	    enable = true;
+	    enableConfigurableSettings = true;	    
+	  }; 
+	};
       };
 
       services.flatpak = {
